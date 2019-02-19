@@ -1,0 +1,13 @@
+Package: LinearModel
+Type: Package
+Title: Linear model for regression and binary classification
+Version: 2019.02.19
+Author: Sixian Zhang, Zaoyi Chi, Hao Wang, Zhaolu Yang
+Maintainer: Sixian Zhang <sz244@nau.edu>
+License: GPL-3
+Description: This is a linear model package that learn from a traning data set and 
+    predict the output of a test data set using early stop regularization and L2 regularization
+LinkingTo: RcppEigen
+Suggests: ElemStatLearn, rmarkdown, knitr
+VignetteBuilder: knitr, rmarkdown
+RoxygenNote: 6.1.1
