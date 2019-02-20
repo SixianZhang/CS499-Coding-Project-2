@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-LMSquareLossIterations <- function(X.mat, y.vec, max.iterations, step.size){
+LMSquareLossIterations <- function(X.mat, y.vec, max.iterations, step.size = 0.5){
   if (!all(is.matrix(X.mat),is.numeric(X.mat))){
     stop("X.mat must be a numeric matrix.")
   }
@@ -53,7 +53,7 @@ LMSquareLossIterations <- function(X.mat, y.vec, max.iterations, step.size){
     W.mat[,iter.index] = W.vec.temp
     
   }
-  
+  W.mat <- (W.mat * X.std.mat) + X.mean.vec 
   return(W.mat)
 }
 
