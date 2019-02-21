@@ -9,7 +9,49 @@
 #'
 #' @examples
 LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec){
+  if (!all(is.matrix(X.mat),is.numeric(X.mat))){
+    stop("X.mat must be a numeric matrix.")
+  }
   
+  if (!all(is.vector(y.vec), is.numeric(y.vec), length(y.vec) == nrow(X.mat))){
+    stop("y.vec must be a numeric vector of the same number of rows as X.mat.")
+  }
+  
+  is.decending <- function(vec){
+    result <- all(diff(vec) < 0) 
+    return(result)
+  }
+  
+  if (!all(is.vector(penalty.vec), is.numeric(penalty.vec), penalty.vec >= 0,
+           is.decending(penalty.vec))){
+    stop("penalty.vec must be a non-negative decreasing numeric vector")
+  }
+  
+  X.mat <- X.mat[,-1]
+  
+  #Obatin X.scaled.mat from the orginal X.mat, to make sure std = 1, u = 0
+  num.train <- dim(X.mat)[1]
+  num.feature <- dim(X.mat)[2]
+  
+  X.mean.vec <- colMeans(X.mat)
+  X.std.vec <- sqrt(rowSums((t(X.mat) - X.mean.vec)^2) / num.train)
+  X.std.mat <- diag(num.feature) * (1/X.std.vec)
+  
+  X.scaled.mat <- (t(X.mat) - X.mean.vec) / X.std.vec
+  
+  slope.mat <- matrix(c(rep(0, num.feature * length(penalty.vec)),
+                        num.feature, length(penalty.vec)))
+  
+  for (index in seq(length(penalty.vec))){
+    optimal.weight.vec <- LMSquareLossL2(X.scaled.mat, y.vec = y.vec,
+                                         initial.weight.vec = penalty.vec[index])
+    slope.mat[,index] <- optimal.weight.vec
+  }
+  
+  intercept <- -t(slope.mat) %*% X.std.mat %*% X.mean.vec #m x 1
+  slope <- t(slope.mat) %*% X.std.mat #m x f-1
+  W.mat <- rbind(t(intercept), t(slope))
+  return(W.mat)
 }
 
 

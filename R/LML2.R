@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-LMSquareLossL2 <- function(X.scaled.mat, y.vec, penalty, opt.thresh, initial.weight.vec){
+LMSquareLossL2 <- function(X.scaled.mat, y.vec, penalty, opt.thresh = 0.5, initial.weight.vec){
   if (!all(is.matrix(X.mat),is.numeric(X.mat))){
     stop("X.mat must be a numeric matrix.")
   }

@@ -54,8 +54,8 @@ LMSquareLossIterations <- function(X.mat, y.vec, max.iterations, step.size = 0.5
     
   }
   itercept <- -t(slope.mat) %*% X.std.mat %*% X.mean.vec #m x 1
-  slope.mat <- t(slope.mat) %*% X.std.mat  #m x (p-1)
-  W.mat <- rbind(t(itercept),t(slope.mat)) #p x m
+  slope <- t(slope.mat) %*% X.std.mat  #m x (p-1)
+  W.mat <- rbind(t(itercept),t(slope)) #p x m
   return(W.mat)
 }
 
