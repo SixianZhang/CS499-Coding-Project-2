@@ -137,8 +137,10 @@ LMLogisticLossEarlyStoppingCV <-
     # Initiallize
     n.features <- ncol(X.mat)
     n.folds <- length(unique(fold.vec))
-    train.loss.mat <- matrix(0, nrow = n.folds, ncol = max.iteration)
-    
+    train.loss.mat <-
+      matrix(0, nrow = n.folds, ncol = max.iteration)
+    validation.loss.mat <-
+      matrix(0, nrow = n.folds, ncol = max.iteration)
     
     # Iterating folds
     for (fold.index in (1:n.folds)) {
@@ -155,20 +157,21 @@ LMLogisticLossEarlyStoppingCV <-
         W.mat <-
           LMLogisticLossIterations(X.mat[train.index,], y.vec[train.index], max.iteration, 0.5) # Do we need to expose step.size?
         
-        if(validation.set == "train"){
-          train.loss.mat[fold.index, ] <-  colMeans(X.mat[validation.index,]%*% W.mat - y.vec[validation.index])
-        }else{
-          validation.loss.mat[fold.index, ] <- colMeans(X.mat[validation.index,]%*% W.mat - y.vec[validation.index])
+        if (validation.set == "train") {
+          train.loss.mat[fold.index, ] <-
+            colMeans(X.mat[validation.index,] %*% W.mat - y.vec[validation.index])
+        } else{
+          validation.loss.mat[fold.index, ] <-
+            colMeans(X.mat[validation.index,] %*% W.mat - y.vec[validation.index])
         }
       }
-      
-      mean.train.loss.vec <- colMeans(train.loss.mat)
-      mean.validation.loss.vec <- colMeans(validation.loss.mat)
-      selected.steps <- which.min(mean.validation.loss.vec)
-      
-      weight.vec <- LMLogisticLossIterations(X.mat,y.vec,selected.steps,0.5)[,selected.steps]
-      
     }
+    mean.train.loss.vec <- colMeans(train.loss.mat)
+    mean.validation.loss.vec <- colMeans(validation.loss.mat)
+    selected.steps <- which.min(mean.validation.loss.vec)
+    
+    weight.vec <-
+      LMLogisticLossIterations(X.mat, y.vec, selected.steps, 0.5)[, selected.steps]
     
     predict <- function(testX.mat) {
       # Check type and dimension
@@ -184,11 +187,13 @@ LMLogisticLossEarlyStoppingCV <-
     
     
     result.list <-
-      list(mean.validation.loss.vec = mean.validation.loss.vec,
-           mean.train.loss.vec = mean.train.loss.vec,
-           selected.steps = selected.steps,
-           weight.vec = weight.vec,
-           predict = predict)
+      list(
+        mean.validation.loss.vec = mean.validation.loss.vec,
+        mean.train.loss.vec = mean.train.loss.vec,
+        selected.steps = selected.steps,
+        weight.vec = weight.vec,
+        predict = predict
+      )
     
     return(result.list)
   }
