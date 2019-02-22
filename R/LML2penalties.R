@@ -43,7 +43,7 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
   X.std.vec <- sqrt(rowSums((t(X.mat) - X.mean.vec) ^ 2) / num.train)
   X.std.mat <- diag(num.feature) * (1 / X.std.vec)
   
-  X.scaled.mat <- (t(X.mat) - X.mean.vec) / X.std.vec
+  X.scaled.mat <- t((t(X.mat) - X.mean.vec) / X.std.vec)
   
   slope.mat <- matrix(c(
     rep(0, num.feature * length(penalty.vec)),
