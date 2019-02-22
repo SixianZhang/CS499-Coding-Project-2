@@ -8,7 +8,7 @@
 #' @return W.mat matrix of weight vectors of size [n x max.iterations]
 #' @export
 #'
-#' @examples
+#' @examples 
 LMSquareLossIterations <-
   function(X.mat, y.vec, max.iterations, step.size = 0.5) {
     if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
