@@ -119,7 +119,7 @@ LMLogisticLossIterations <-
     # Scale X.mat with m = 0, sd = 1
     feature.mean.vec <- colMeans(X.mat)
     feature.sd.vec <- sqrt(rowSums((t(X.mat) - feature.mean.vec)^2)/n.train)
-    feature.sd.mat <- diag(feature.sd.vec)
+    feature.sd.mat <- 1 / diag(feature.sd.vec)
     
     X.scaled.mat <- t((t(X.mat) - feature.mean.vec)/feature.sd.vec)
     
@@ -129,9 +129,8 @@ LMLogisticLossIterations <-
     for(n.interations in (2:max.iterations)){
       W.gradient.vec <- - t(X.scaled.mat) %*% y.vec /(1 + exp(y.vec * (X.scaled.mat %*% W.mat[, n.iterations - 1])))
       W.mat[,n.iterations] <- W.mat[,n.iterations] - step.size * W.gradient.vec
-    
     }
-    intercept.vec <- -feature.mean.vec %*% feature.sd.mat %*% W.mat
+    intercept.vec <- -t(feature.mean.vec) %*% feature.sd.mat %*% W.mat
     W.mat <- rbind(intercept.vec,feature.sd.mat %*% W.mat)
     
     return(W.mat)
