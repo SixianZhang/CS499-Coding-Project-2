@@ -42,7 +42,7 @@ LMSquareLossIterations <-
       sqrt(rowSums((t(X.mat) - X.mean.mat) ^ 2) / num.train)
     X.std.mat <- diag(num.feature) * (1 / X.std.vec)
     
-    X.scaled.mat <- (t(X.mat) - X.mean.vec) / X.std.vec
+    X.scaled.mat <- t((t(X.mat) - X.mean.vec) / X.std.vec)
     slope.mat <-
       matrix(c(
         rep(0, num.feature * max.iterations),
@@ -54,12 +54,12 @@ LMSquareLossIterations <-
     for (iter.index in (1:max.iterations)) {
       if (iter.index == 1) {
         mean.loss.temp.vec <- (2 * t(X.scaled.mat) %*%
-                                 (X.scaled.mat %*% slope.mat[, 1])) / num.train
+                                 (X.scaled.mat %*% slope.mat[, 1] - y.vec)) / num.train
         slope.vec.temp <-
           slope.mat[, 1] - step.size * mean.loss.temp.vec
       } else{
         mean.loss.temp.vec <- (2 * t(X.scaled.mat) %*%
-                                 (X.scaled.mat %*% slope.mat[, iter.index - 1])) / num.train
+                                 (X.scaled.mat %*% slope.mat[, iter.index - 1] - y.vec)) / num.train
         slope.vec.temp <-
           slope.mat[, iter.index - 1] - step.size * mean.loss.temp.vec
       }
