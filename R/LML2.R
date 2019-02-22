@@ -47,7 +47,7 @@ LMSquareLossL2 <-
       grad.cost.func <- 2 * t(X.scaled.mat) %*%
         (X.scaled.mat %*% weight.vec - y.vec) + 2 * penalty * weight.vec
       
-      if (t(grad.cost.func) %*% grad.cost.func <= opt.thresh) {
+      if (sum(abs(grad.cost.func)) <= opt.thresh) {
         break
       } else{
         weight.vec <- weight.vec - penalty * (grad.cost.func)
