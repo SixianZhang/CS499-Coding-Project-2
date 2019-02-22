@@ -26,34 +26,36 @@ LMSquareLossIterations <- function(X.mat, y.vec, max.iterations, step.size = 0.5
     stop("step.size must be a numeric scalar value.")
   }
   
+  X.mat <- X.mat[,-1]
   #Obatin X.scaled.mat from the orginal X.mat, to make sure std = 1, u = 0
   num.train <- dim(X.mat)[1]
   num.feature <- dim(X.mat)[2]
   
   X.mean.vec <- colMeans(X.mat)
-  X.mean.mat <- matrix(rep(X.mean.vec, num.train),
-                       num.train, num.feature, byrow = TRUE) 
-  X.std.vec <- sqrt(colSums((X.mat - X.mean.mat)^2))
-  X.std.mat <- matrix(rep(X.std.vec, num.train),
-                      num.train, num.feature, byrow = TRUE)
-  X.scaled.mat <- (X.mat - X.mean.mat) / X.std.mat
-  W.mat <- matrix(c(rep(0, num.feature * max.iterations), num.feature, max.iterations)) 
   
-  # for-loop to get the W.mat matrix
+  X.std.vec <- sqrt(rowSums((t(X.mat) - X.mean.mat)^2) / num.train)
+  X.std.mat <- diag(num.feature) * (1/X.std.vec)
+  
+  X.scaled.mat <- (t(X.mat) - X.mean.vec) / X.std.vec
+  slope.mat <- matrix(c(rep(0, num.feature * max.iterations), num.feature, max.iterations)) 
+  
+  # for-loop to get the slope.mat matrix
   for (iter.index in (1:max.iterations)){
     if (iter.index == 1){
       mean.loss.temp.vec <- (2 * t(X.scaled.mat) %*% 
-                           (X.scaled.mat %*% W.mat[,1])) / num.train
-      W.vec.temp <- W.mat[,1] - step.size * mean.loss.temp.vec
+                           (X.scaled.mat %*% slope.mat[,1])) / num.train
+      slope.vec.temp <- slope.mat[,1] - step.size * mean.loss.temp.vec
     }else{
-      mean.loss.temp <- (2 * t(X.scaled.mat) %*% 
-                           (X.scaled.mat %*% W.mat[,iter.index - 1])) / num.train
-      W.vec.temp <- W.mat[,iter.index - 1] - step.size * mean.loss.temp.vec
+      mean.loss.temp.vec <- (2 * t(X.scaled.mat) %*% 
+                           (X.scaled.mat %*% slope.mat[,iter.index - 1])) / num.train
+      slope.vec.temp <- slope.mat[,iter.index - 1] - step.size * mean.loss.temp.vec
     }
-    W.mat[,iter.index] = W.vec.temp
+    slope.mat[,iter.index] = slope.vec.temp
     
   }
-  W.mat <- (W.mat * X.std.mat) + X.mean.vec 
+  itercept <- -t(slope.mat) %*% X.std.mat %*% X.mean.vec #m x 1
+  slope <- t(slope.mat) %*% X.std.mat  #m x (p-1)
+  W.mat <- rbind(t(itercept),t(slope)) #p x m
   return(W.mat)
 }
 

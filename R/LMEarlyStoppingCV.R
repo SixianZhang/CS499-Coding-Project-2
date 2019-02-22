@@ -46,7 +46,7 @@ LMSquareLossEarlyStoppingCV <- function(X.mat, y.vec, fold.vec, max.iteration){
     
     #Calculate validation.loss
     validation.predict <- X.mat[validation.index,] %*% W.mat
-    validation.loss <- (validation.loss - y.vec[validation.index,])^2
+    validation.loss <- (validation.predict - y.vec[validation.index,])^2
     
     mean.train.loss.vec <- colMeans(train.loss)
     mean.validation.loss.vec <- colMeans(validation.loss)
@@ -81,6 +81,7 @@ LMSquareLossEarlyStoppingCV <- function(X.mat, y.vec, fold.vec, max.iteration){
       weight.vec = weight.vec,
       predict = predict
     )
+  return(result.list)
 }
 
 
