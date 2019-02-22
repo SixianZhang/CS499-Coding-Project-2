@@ -1,2 +1,2 @@
-useDynLib(NearestNeighbors)
+#useDynLib(NearestNeighbors)
 exportPattern("^[[:alpha:]]+")

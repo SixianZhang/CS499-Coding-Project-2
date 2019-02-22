@@ -131,7 +131,8 @@ LMLogisticLossIterations <-
       W.mat[,n.iterations] <- W.mat[,n.iterations] - step.size * W.gradient.vec
     
     }
-    W.mat <- rbind(rep(1,max.iterations),feature.sd.mat %*% W.mat)
+    intercept.vec <- -feature.mean.vec %*% feature.sd.mat %*% W.mat
+    W.mat <- rbind(intercept.vec,feature.sd.mat %*% W.mat)
     
     return(W.mat)
     
