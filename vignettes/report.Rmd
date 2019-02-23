@@ -1,0 +1,66 @@
+---
+title: "Report for Coding project 2: linear models for regression and binary classification"
+author: "Sixian Zhang, Zaoyi Chi, Hao Wang, Zhaolu Yang"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Report for project 1 on K Nearest Neighbors}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+For this project we created an R package with C++ code that implements a version of the nearest neighbors algorithm.
+
+Here are some significant formulas that have been used in this function:
+
+
+**Manhattan distance: ** **$d(i,j)=\sum_{1}^{n}(|X_1-X_2|+|Y_1-Y_2|)$**
+
+**Nearest neighbor prediction function: ** **$f_{D,k(x)} = \frac{1}{k} \sum_{i\in N_{D,k}}^{n} y_i$**
+
+**The optimal number of neighbors:      ** **$\hat{k} = argmin_{k\in (1,2,...,k_{max})} \frac{1}{F_{max}} \sum_{S=1}^{F_{max}} Error_{Ds}(f_{D,-S,k})$     ** 
+  *(as estimated via minimizing the mean validation loss).
+  
+
+## Main Function
+The purpose of this section is to give users a general information of this package. We will briefly go over the main functions.
+
+```{r}
+## Source Code:
+
+
+```
+
+## Experiments/application
+we are going to run our code on the following data sets.
+
+## Data set 1: spam
+```{r}
+
+```
+
+### Matrix of loss values
+```{r, fig.show='hold', fig.width= 6, fig.height= 6}
+
+```
+
+Comment on difference in accuracy:
+**The mean loss value of the NN prediction is typically smaller than the Baseline prediction.**
+
+
+### Train/validation loss plot
+```{r, fig.show='hold', fig.width= 6, fig.height= 6}
+
+```
+
+The optimal number of neighbors is: 
+
+## End of the report
