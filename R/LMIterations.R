@@ -8,7 +8,7 @@
 #' @return W.mat matrix of weight vectors of size [n x max.iterations]
 #' @export
 #'
-#' @examples
+#' @examples 
 LMSquareLossIterations <-
   function(X.mat, y.vec, max.iterations, step.size = 0.5) {
     if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
@@ -42,7 +42,7 @@ LMSquareLossIterations <-
       sqrt(rowSums((t(X.mat) - X.mean.mat) ^ 2) / num.train)
     X.std.mat <- diag(num.feature) * (1 / X.std.vec)
     
-    X.scaled.mat <- (t(X.mat) - X.mean.vec) / X.std.vec
+    X.scaled.mat <- t((t(X.mat) - X.mean.vec) / X.std.vec)
     slope.mat <-
       matrix(c(
         rep(0, num.feature * max.iterations),
@@ -54,12 +54,12 @@ LMSquareLossIterations <-
     for (iter.index in (1:max.iterations)) {
       if (iter.index == 1) {
         mean.loss.temp.vec <- (2 * t(X.scaled.mat) %*%
-                                 (X.scaled.mat %*% slope.mat[, 1])) / num.train
+                                 (X.scaled.mat %*% slope.mat[, 1] - y.vec)) / num.train
         slope.vec.temp <-
           slope.mat[, 1] - step.size * mean.loss.temp.vec
       } else{
         mean.loss.temp.vec <- (2 * t(X.scaled.mat) %*%
-                                 (X.scaled.mat %*% slope.mat[, iter.index - 1])) / num.train
+                                 (X.scaled.mat %*% slope.mat[, iter.index - 1] - y.vec)) / num.train
         slope.vec.temp <-
           slope.mat[, iter.index - 1] - step.size * mean.loss.temp.vec
       }
@@ -119,7 +119,7 @@ LMLogisticLossIterations <-
     # Scale X.mat with m = 0, sd = 1
     feature.mean.vec <- colMeans(X.mat)
     feature.sd.vec <- sqrt(rowSums((t(X.mat) - feature.mean.vec)^2)/n.train)
-    feature.sd.mat <- diag(feature.sd.vec)
+    feature.sd.mat <- 1 / diag(feature.sd.vec)
     
     X.scaled.mat <- t((t(X.mat) - feature.mean.vec)/feature.sd.vec)
     
@@ -129,9 +129,8 @@ LMLogisticLossIterations <-
     for(n.interations in (2:max.iterations)){
       W.gradient.vec <- - t(X.scaled.mat) %*% y.vec /(1 + exp(y.vec * (X.scaled.mat %*% W.mat[, n.iterations - 1])))
       W.mat[,n.iterations] <- W.mat[,n.iterations] - step.size * W.gradient.vec
-    
     }
-    intercept.vec <- -feature.mean.vec %*% feature.sd.mat %*% W.mat
+    intercept.vec <- -t(feature.mean.vec) %*% feature.sd.mat %*% W.mat
     W.mat <- rbind(intercept.vec,feature.sd.mat %*% W.mat)
     
     return(W.mat)

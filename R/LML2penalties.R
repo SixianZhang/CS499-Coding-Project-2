@@ -43,7 +43,7 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
   X.std.vec <- sqrt(rowSums((t(X.mat) - X.mean.vec) ^ 2) / num.train)
   X.std.mat <- diag(num.feature) * (1 / X.std.vec)
   
-  X.scaled.mat <- (t(X.mat) - X.mean.vec) / X.std.vec
+  X.scaled.mat <- t((t(X.mat) - X.mean.vec) / X.std.vec)
   
   slope.mat <- matrix(c(
     rep(0, num.feature * length(penalty.vec)),
@@ -105,7 +105,7 @@ LMLogisticLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
   # Scale X.mat with m = 0, sd = 1
   feature.mean.vec <- colMeans(X.mat)
   feature.sd.vec <- sqrt(rowSums((t(X.mat) - feature.mean.vec)^2)/n.train)
-  feature.sd.mat <- diag(feature.sd.vec)
+  feature.sd.mat <- 1 / diag(feature.sd.vec)
   
   X.scaled.mat <- t((t(X.mat) - feature.mean.vec)/feature.sd.vec)
   
@@ -115,7 +115,7 @@ LMLogisticLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
     W.mat[,i.penalty] <- LMLogisticLossL2(X.scaled.mat,y.vec,opt.thresh, penalty.vec[i.penalty])
   }
   
-  intercept.vec <- -feature.mean.vec %*% feature.sd.mat %*% W.mat
+  intercept.vec <- -t(feature.mean.vec) %*% feature.sd.mat %*% W.mat
   W.mat <- rbind(intercept.vec,feature.sd.mat %*% W.mat)
   
   return(W.mat)
