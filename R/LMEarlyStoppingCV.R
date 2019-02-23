@@ -5,7 +5,9 @@
 #' @param fold.vec
 #' @param max.iterations integer scalar greater than 1
 #'
-#' @return
+#' @return result.list a list with mean.validation.loss.vec,
+#' mean.train.loss.vec,selected.steps,weight.vec,and predict function
+#' 
 #' @export
 #'
 #' @examples
@@ -101,8 +103,10 @@ LMSquareLossEarlyStoppingCV <-
 #' @param fold.vec fold index vector of size [n x 1]
 #' @param max.iterations integer scalar greater than 1
 #'
-#' @return result.list
-#' @export
+#' @return result.list a list with mean.validation.loss.vec,
+#' mean.train.loss.vec,selected.steps,weight.vec,and predict function
+#' 
+#' @export 
 #'
 #' @examples
 LMLogisticLossEarlyStoppingCV <-

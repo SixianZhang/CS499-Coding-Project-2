@@ -1,12 +1,12 @@
 #' Linear model L2 regularization with square loss
 #'
-#' @param X.scaled.mat
-#' @param y.vec
-#' @param penalty
-#' @param opt.thresh
-#' @param initial.weight.vec
+#' @param X.scaled.mat a numeric matrix of size [n x p]
+#' @param y.vec a numeric matrix of length nrow(X.scaled.mat)
+#' @param penalty a non-negative numeric scalar
+#' @param opt.thresh a positive numeric scalar
+#' @param initial.weight.vec a numeric vector of size ncol(X.scaled.mat) 
 #'
-#' @return
+#' @return opt.weight the optimal weight vector of length ncol(X.scaled)
 #' @export
 #'
 #' @examples
@@ -62,13 +62,13 @@ LMSquareLossL2 <-
 
 #' Linear model L2 regularization with logistic loss
 #'
-#' @param X.scaled.mat
-#' @param y.vec
-#' @param penalty
-#' @param opt.thresh
-#' @param initial.weight.vec
+#' @param X.scaled.mat a numeric matrix of size [n x p]
+#' @param y.vec a numeric matrix of length nrow(X.scaled.mat)
+#' @param penalty a non-negative numeric scalar
+#' @param opt.thresh a positive numeric scalar
+#' @param initial.weight.vec a numeric vector of size ncol(X.scaled.mat) 
 #'
-#' @return
+#' @return opt.weight the optimal weight vector of length ncol(X.scaled)
 #' @export
 #'
 #' @examples

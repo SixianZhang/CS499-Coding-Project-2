@@ -1,10 +1,10 @@
 #' Linear model with L2 penalties and square loss
 #'
-#' @param X.mat
-#' @param y.vec
-#' @param penalty.vec
+#' @param X.mat a numeric matrix of size [n x p]
+#' @param y.vec a numeric vector of length nrow(X.mat)
+#' @param penalty.vec a non-negative numeric vector
 #'
-#' @return
+#' @return W.mat a numeric weight matrix of size [ncol(X.mat) x length(penalty.vec)]
 #' @export
 #'
 #' @examples
@@ -68,11 +68,11 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
 
 #' Linear model with L2 penalties and logistic loss
 #'
-#' @param X.mat
-#' @param y.vec
-#' @param penalty.vec
+#' @param X.mat a numeric matrix of size [n x p]
+#' @param y.vec a numeric vector of length nrow(X.mat)
+#' @param penalty.vec a non-negative numeric vector
 #'
-#' @return
+#' @return W.mat a numeric weight matrix of size [ncol(X.mat) x length(penalty.vec)]
 #' @export
 #'
 #' @examples
