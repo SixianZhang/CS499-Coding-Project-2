@@ -5,10 +5,11 @@
 #' @param max.iterations integer scalar greater than 1
 #' @param step.size integer scalar
 #'
-#' @return W.mat matrix of weight vectors of size [n x max.iterations]
+#' @return W.mat matrix of weight vectors of size [(p + 1) x max.iterations]. 
+#' A prediction can be obtained by cbind(1,X.mat) %*% W.mat.
 #' @export
 #'
-#' @examples 
+#' @examples
 LMSquareLossIterations <-
   function(X.mat, y.vec, max.iterations, step.size = 0.5) {
     if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
@@ -31,7 +32,7 @@ LMSquareLossIterations <-
       stop("step.size must be a numeric scalar value.")
     }
     
-    X.mat <- X.mat[,-1]
+    X.mat <- X.mat[, -1]
     #Obatin X.scaled.mat from the orginal X.mat, to make sure std = 1, u = 0
     num.train <- dim(X.mat)[1]
     num.feature <- dim(X.mat)[2]
@@ -77,15 +78,15 @@ LMSquareLossIterations <-
 #' @param X.mat train feature matrix of size [n x p]
 #' @param y.vec train label vector of size [n x 1]
 #' @param max.iterations integer scalar greater than 1
-#' @param step.size integer scalar
+#' @param step.size a numeric scalar greater than zero
 #'
-#' @return W.mat matrix of weight vectors of size [n x max.iterations]
+#' @return W.mat matrix of weight vectors of size [(p + 1) x max.iterations]
+#' 
 #' @export
 #'
 #' @examples
 LMLogisticLossIterations <-
   function(X.mat, y.vec, max.iterations, step.size) {
-    
     # Check type and dimension
     if (!all(is.numeric(X.mat), is.matrix(X.mat))) {
       stop("X.mat must be a numeric matrix")
@@ -103,35 +104,66 @@ LMLogisticLossIterations <-
       length(max.iterations) == 1,
       max.iterations > 1
     )) {
-      stop("max.iterations must be an integer scalar greater than zero")
+      stop("max.iterations must be an integer scalar greater than one")
     }
     
     if (!all(is.numeric(step.size), length(step.size) == 1, step.size > 0)) {
       stop("step.size must be a positive scalar")
     }
     
-    # remove the 1 vector if that is the case
-    X.mat <- X.mat[,-1]
+    # # remove the 1 vector if that is the case
+    # X.mat <- X.mat[, -1]
     
     n.train <- nrow(X.mat)
     n.features <- ncol(X.mat)
     
     # Scale X.mat with m = 0, sd = 1
     feature.mean.vec <- colMeans(X.mat)
-    feature.sd.vec <- sqrt(rowSums((t(X.mat) - feature.mean.vec)^2)/n.train)
+    feature.sd.vec <-
+      sqrt(rowSums((t(X.mat) - feature.mean.vec) ^ 2) / n.train) # try to use sd but that gives the sd for the whole matrix
+    
+    # Check if there is a feature with 0 deviation
+    if(!feature.sd.vec != 0){
+      
+    }
+    
     feature.sd.mat <- 1 / diag(feature.sd.vec)
     
-    X.scaled.mat <- t((t(X.mat) - feature.mean.vec)/feature.sd.vec)
+    X.scaled.mat <- t((t(X.mat) - feature.mean.vec) / feature.sd.vec) # Use scale to simplify.
     
+    # Initialize W.mat matrix
     W.mat <- matrix(0, nrow = n.features, ncol = max.iterations)
+    beta.vec <- rep(0,l = max.iterations)
+    W.temp.vec <- W.mat[,0]
+    beta.temp <- 0 
     
     # Iteration
-    for(n.interations in (2:max.iterations)){
-      W.gradient.vec <- - t(X.scaled.mat) %*% y.vec /(1 + exp(y.vec * (X.scaled.mat %*% W.mat[, n.iterations - 1])))
-      W.mat[,n.iterations] <- W.mat[,n.iterations] - step.size * W.gradient.vec
+    for (n.interations in (1:max.iterations)) {
+      # Calculate L(w)'
+      # This is training without interception
+      # loss.gradient.vec <-
+      #   -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% W.temp.vec)))
+      
+      # This is trainging with interception
+      # Calculate L(w)'
+      W.gradient.vec <-
+        - t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% W.temp.vec + beta.temp)))
+      # Calculate L(beta)'
+      beta.gradient <- 
+        - sum(y.vec) / (1 + exp(y.vec * (X.scaled.mat %*% W.temp.vec + beta.temp)))
+      
+      # Take a step
+      W.mat[, n.iterations] <-
+        W.temp.vec - step.size * W.gradient.vec
+      beta.vec[n.iterations] <- 
+        beta.temp - step.size * beta.gradient
+      
+      W.temp.vec <- W.mat[ ,n.interations]
+      beta.gradient <- beta.vec[n.iterations]
     }
-    intercept.vec <- -t(feature.mean.vec) %*% feature.sd.mat %*% W.mat
-    W.mat <- rbind(intercept.vec,feature.sd.mat %*% W.mat)
+    intercept.vec <- 
+      -t(feature.mean.vec) %*% feature.sd.mat %*% W.mat
+    W.mat <- rbind(intercept.vec, feature.sd.mat %*% W.mat)
     
     return(W.mat)
     

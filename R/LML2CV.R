@@ -107,6 +107,7 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
 #'
 #' @return result.list a list with mean.validation.loss.vec,
 #' mean.train.loss.vec,penalty.vec,selected.penalty,weight.vec,and predict function
+#' 
 #' @export
 #'
 #' @examples

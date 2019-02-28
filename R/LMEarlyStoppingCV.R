@@ -7,7 +7,7 @@
 #'
 #' @return result.list a list with mean.validation.loss.vec,
 #' mean.train.loss.vec,selected.steps,weight.vec,and predict function
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -102,15 +102,20 @@ LMSquareLossEarlyStoppingCV <-
 #' @param y.vec train label vector of size [n x 1]
 #' @param fold.vec fold index vector of size [n x 1]
 #' @param max.iterations integer scalar greater than 1
+#' @param step.size a numeric scaler greater than 0, default is 0.5
 #'
 #' @return result.list a list with mean.validation.loss.vec,
 #' mean.train.loss.vec,selected.steps,weight.vec,and predict function
-#' 
-#' @export 
+#'
+#' @export
 #'
 #' @examples
 LMLogisticLossEarlyStoppingCV <-
-  function(X.mat, y.vec, fold.vec, max.iteration) {
+  function(X.mat,
+           y.vec,
+           fold.vec = NULL,
+           max.iteration,
+           step.size = 0.5) {
     # Check type and dimension
     if (!all(is.numeric(X.mat), is.matrix(X.mat))) {
       stop("X.mat must be a numeric matrix")
@@ -122,11 +127,14 @@ LMLogisticLossEarlyStoppingCV <-
       stop("y.vec must be a numeric vector of length nrow(X.mat)")
     }
     
-    if (!all(is.numeric(fold.vec),
-             is.vector(fold.vec),
-             length(fold.vec) == nrow(X.mat))) {
-      stop("fold.vec must be a numeric vector of length nrow(X.mat)")
-    }
+    if (is.null(fold.vec)) {
+      fold.vec <- sample(rep(1:5, l = nrow(X.mat)))
+    } else
+      if (!all(is.numeric(fold.vec),
+               is.vector(fold.vec),
+               length(fold.vec) == nrow(X.mat))) {
+        stop("fold.vec must be a numeric vector of length nrow(X.mat)")
+      }
     
     if (!all(
       is.numeric(max.iterations),
@@ -137,10 +145,14 @@ LMLogisticLossEarlyStoppingCV <-
       stop("max.iterations must be an integer scalar greater than zero")
     }
     
+    if (!all(is.numeric(step.size), length(step.size) == 1, step.size > 0)) {
+      stop("step.size must be a positive scalar")
+    }
     
     # Initiallize
     n.features <- ncol(X.mat)
     n.folds <- length(unique(fold.vec))
+    
     train.loss.mat <-
       matrix(0, nrow = n.folds, ncol = max.iteration)
     validation.loss.mat <-
@@ -158,24 +170,27 @@ LMLogisticLossEarlyStoppingCV <-
           validation.index <- which(fold.vec == fold.index)
         }
         
+        # W.mat is [(p + 1) x max.iteration]
         W.mat <-
-          LMLogisticLossIterations(X.mat[train.index,], y.vec[train.index], max.iteration, 0.5) # Do we need to expose step.size?
+          LMLogisticLossIterations(X.mat[train.index,], y.vec[train.index], max.iteration, step.size) # Do we need to expose step.size?
         
         if (validation.set == "train") {
           train.loss.mat[fold.index, ] <-
-            colMeans(X.mat[validation.index,] %*% W.mat - y.vec[validation.index])
+            colMeans(cbind(1, X.mat)[validation.index,] %*% W.mat - y.vec[validation.index]) # Use cbind here because W.mat is (P + 1) x max.iteration
         } else{
           validation.loss.mat[fold.index, ] <-
-            colMeans(X.mat[validation.index,] %*% W.mat - y.vec[validation.index])
+            colMeans(cbind(X.mat)[validation.index,] %*% W.mat - y.vec[validation.index])
         }
       }
     }
+    
     mean.train.loss.vec <- colMeans(train.loss.mat)
     mean.validation.loss.vec <- colMeans(validation.loss.mat)
     selected.steps <- which.min(mean.validation.loss.vec)
     
-    weight.vec <-
-      LMLogisticLossIterations(X.mat, y.vec, selected.steps, 0.5)[, selected.steps]
+    weight.mat <-
+      LMLogisticLossIterations(X.mat, y.vec, selected.steps, step.size)
+    weight.vec <- rbind(1, weight.mat)[, selected.steps]
     
     predict <- function(testX.mat) {
       # Check type and dimension
@@ -185,7 +200,8 @@ LMLogisticLossEarlyStoppingCV <-
         stop("testX.mat must be a numeric matrix with n.features columns")
       }
       
-      prediction.vec <- testX.mat %*% t(weight.vec)
+      prediction.vec <-
+        cbind(1, testX.mat) %*% t(weight.vec) # testX.mat is of size [n x (p + 1)]
       return(prediction)
     }
     
