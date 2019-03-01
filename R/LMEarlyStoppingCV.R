@@ -48,21 +48,21 @@ LMSquareLossEarlyStoppingCV <-
       
       #Calculate train.loss
       W.mat <-
-        LMSquareLossIterations(X.mat[train.index,], y.vec[train.index,], max.iterations)
+        LMSquareLossIterations(X.mat[train.index, ], y.vec[train.index, ], max.iterations)
       
-      train.predit <- X.mat[train.index,] %*% W.mat
-      train.loss <- (train.predit - y.vec[train.index,]) ^ 2
+      train.predit <- X.mat[train.index, ] %*% W.mat
+      train.loss <- (train.predit - y.vec[train.index, ]) ^ 2
       
       #Calculate validation.loss
-      validation.predict <- X.mat[validation.index,] %*% W.mat
+      validation.predict <- X.mat[validation.index, ] %*% W.mat
       validation.loss <-
-        (validation.predict - y.vec[validation.index,]) ^ 2
+        (validation.predict - y.vec[validation.index, ]) ^ 2
       
       mean.train.loss.vec <- colMeans(train.loss)
       mean.validation.loss.vec <- colMeans(validation.loss)
       
-      train.loss.mat[fold.i,] = mean.train.loss.vec
-      validation.loss.mat[fold.i,] = mean.validation.loss.vec
+      train.loss.mat[fold.i, ] = mean.train.loss.vec
+      validation.loss.mat[fold.i, ] = mean.validation.loss.vec
     }
     
     mean.train.loss.vec <- colMeans(train.loss.mat)
@@ -103,6 +103,7 @@ LMSquareLossEarlyStoppingCV <-
 #' @param fold.vec fold index vector of size [n x 1]
 #' @param max.iterations integer scalar greater than 1
 #' @param step.size a numeric scaler greater than 0, default is 0.5
+
 #'
 #' @return result.list a list with mean.validation.loss.vec,
 #' mean.train.loss.vec,selected.steps,weight.vec,and predict function
@@ -116,6 +117,7 @@ LMLogisticLossEarlyStoppingCV <-
            fold.vec = NULL,
            max.iteration,
            step.size = 0.5) {
+
     # Check type and dimension
     if (!all(is.numeric(X.mat), is.matrix(X.mat))) {
       stop("X.mat must be a numeric matrix")
@@ -180,6 +182,7 @@ LMLogisticLossEarlyStoppingCV <-
         } else{
           validation.loss.mat[fold.index, ] <-
             colMeans(cbind(X.mat)[validation.index,] %*% W.mat - y.vec[validation.index])
+
         }
       }
     }
@@ -191,6 +194,7 @@ LMLogisticLossEarlyStoppingCV <-
     weight.mat <-
       LMLogisticLossIterations(X.mat, y.vec, selected.steps, step.size)
     weight.vec <- rbind(1, weight.mat)[, selected.steps]
+
     
     predict <- function(testX.mat) {
       # Check type and dimension
@@ -202,6 +206,7 @@ LMLogisticLossEarlyStoppingCV <-
       
       prediction.vec <-
         cbind(1, testX.mat) %*% t(weight.vec) # testX.mat is of size [n x (p + 1)]
+
       return(prediction)
     }
     

@@ -82,6 +82,7 @@ LMSquareLossIterations <-
 #'
 #' @return W.mat matrix of weight vectors of size [(p + 1) x max.iterations]
 #' 
+
 #' @export
 #'
 #' @examples
@@ -162,6 +163,7 @@ LMLogisticLossIterations <-
       beta.gradient <- beta.vec[n.iterations]
     }
     intercept.vec <- 
+
       -t(feature.mean.vec) %*% feature.sd.mat %*% W.mat
     W.mat <- rbind(intercept.vec, feature.sd.mat %*% W.mat)
     
