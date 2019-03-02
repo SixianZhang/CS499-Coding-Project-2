@@ -4,7 +4,7 @@ author: "Sixian Zhang, Zaoyi Chi, Hao Wang, Zhaolu Yang"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Report for project 1 on K Nearest Neighbors}
+  %\VignetteIndexEntry{Report for Coding project 2: linear models for regression and binary classification}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -21,6 +21,7 @@ For this project we created an R package with C++ code that implements a version
 
 Here are some significant formulas that have been used in this function:
 
+$cost/loss functions for each learning algorithm:$
 
 **Manhattan distance: ** **$d(i,j)=\sum_{1}^{n}(|X_1-X_2|+|Y_1-Y_2|)$**
 
@@ -53,8 +54,6 @@ we are going to run our code on the following data sets.
 ```
 
 Comment on difference in accuracy:
-**The mean loss value of the NN prediction is typically smaller than the Baseline prediction.**
-
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -62,5 +61,7 @@ Comment on difference in accuracy:
 ```
 
 The optimal number of neighbors is: 
+
+Compare against NNLearnCV, and comment on whether or not linear models or nearest neighbors is more accurate:
 
 ## End of the report
