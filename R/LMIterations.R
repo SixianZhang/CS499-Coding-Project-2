@@ -5,7 +5,7 @@
 #' @param max.iterations integer scalar greater than 1
 #' @param step.size integer scalar
 #'
-#' @return W.mat matrix of weight vectors of size [(p + 1) x max.iterations]. 
+#' @return W.mat matrix of weight vectors of size [(p + 1) x max.iterations].
 #' A prediction can be obtained by cbind(1,X.mat) %*% W.mat.
 #' @export
 #'
@@ -32,7 +32,7 @@ LMSquareLossIterations <-
       stop("step.size must be a numeric scalar value.")
     }
     
-    X.mat <- X.mat[, -1]
+    X.mat <- X.mat[,-1]
     #Obatin X.scaled.mat from the orginal X.mat, to make sure std = 1, u = 0
     num.train <- dim(X.mat)[1]
     num.feature <- dim(X.mat)[2]
@@ -81,7 +81,7 @@ LMSquareLossIterations <-
 #' @param step.size a numeric scalar greater than zero
 #'
 #' @return W.mat matrix of weight vectors of size [(p + 1) x max.iterations]
-#' 
+#'
 
 #' @export
 #'
@@ -124,19 +124,22 @@ LMLogisticLossIterations <-
       sqrt(rowSums((t(X.mat) - feature.mean.vec) ^ 2) / n.train) # try to use sd but that gives the sd for the whole matrix
     
     # Check if there is a feature with 0 deviation
-    if(!feature.sd.vec != 0){
+    if (!feature.sd.vec != 0) {
+      # Remove that feature
       
     }
     
     feature.sd.mat <- 1 / diag(feature.sd.vec)
     
-    X.scaled.mat <- t((t(X.mat) - feature.mean.vec) / feature.sd.vec) # Use scale to simplify.
+    X.scaled.mat <-
+      t((t(X.mat) - feature.mean.vec) / feature.sd.vec) # Use scale to simplify.
     
     # Initialize W.mat matrix
     W.mat <- matrix(0, nrow = n.features, ncol = max.iterations)
-    beta.vec <- rep(0,l = max.iterations)
-    W.temp.vec <- W.mat[,0]
-    beta.temp <- 0 
+    beta.vec <- rep(0, l = max.iterations)
+    
+    W.temp.vec <- W.mat[, 0]
+    beta.temp <- 0
     
     # Iteration
     for (n.interations in (1:max.iterations)) {
@@ -148,24 +151,30 @@ LMLogisticLossIterations <-
       # This is trainging with interception
       # Calculate L(w)'
       W.gradient.vec <-
-        - t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% W.temp.vec + beta.temp)))
+        -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (
+          X.scaled.mat %*% W.temp.vec + beta.temp
+        )))
       # Calculate L(beta)'
-      beta.gradient <- 
-        - sum(y.vec) / (1 + exp(y.vec * (X.scaled.mat %*% W.temp.vec + beta.temp)))
+      beta.gradient <-
+        -sum(y.vec) / (1 + exp(y.vec * (
+          X.scaled.mat %*% W.temp.vec + beta.temp
+        )))
       
       # Take a step
       W.mat[, n.iterations] <-
         W.temp.vec - step.size * W.gradient.vec
-      beta.vec[n.iterations] <- 
+      beta.vec[n.iterations] <-
         beta.temp - step.size * beta.gradient
       
-      W.temp.vec <- W.mat[ ,n.interations]
-      beta.gradient <- beta.vec[n.iterations]
+      W.temp.vec <- W.mat[, n.interations]
+      beta.temp <- beta.vec[n.iterations]
     }
-    intercept.vec <- 
-
-      -t(feature.mean.vec) %*% feature.sd.mat %*% W.mat
-    W.mat <- rbind(intercept.vec, feature.sd.mat %*% W.mat)
+    
+    # unscaling
+    intercept.vec <-
+      feature.mean.vec %*% feature.sd.mat %*% W.mat + beta.vec
+    W.mat <- feature.sd.mat %*% W.mat
+    W.mat <- rbind(intercept.vec, W.mat)
     
     return(W.mat)
     

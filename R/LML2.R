@@ -60,7 +60,7 @@ LMSquareLossL2 <-
   }
 
 
-#' Linear model L2 regularization with logistic loss
+#' Linear model L2 regularization with logistic loss, including beta during the training
 #'
 #' @param X.scaled.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric matrix of length nrow(X.scaled.mat)
@@ -109,25 +109,29 @@ LMLogisticLossL2 <-
       is.vector(initial.weight.vec),
       length(initial.weight.vec) == ncol(X.scaled.mat)
     )) {
-      stop("initial.weight.vec must be a numeric vector of length ncol(X.scaled.mat)")
+      stop("initial.weight.vec must be a numeric vector of length ncol(X.scaled.mat) + 1") # <- Change here
     }
     
     # Initializing
+    # here n.feature is also p
     n.features <- ncol(X.scaled.mat)
     
-    opt.weight.vec = initial.weight.vec
+    opt.W.vec = initial.weight.vec[-1]
+    opt.beta = initial.weight.vec[1]
     
-    loss.gradient.vec <- -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.weight.vec)))
-    cost.gradient.vec <- loss.gradient.vec + penalty * opt.weight.vec # This is for L1 norm
+    W.gradient.vec <- -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec))) +  penalty * opt.W.vec
+    beta.gradient <-  -sum(y.vec) / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + opt.beta)))
     
-    while (norm(abs(cost.gradient.vec)) > opt.thresh){ 
-      loss.gradient.vec <- -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.weight.vec)))
-      cost.gradient.vec <- loss.gradient.vec + penalty * opt.weight.vec # This is for L1 norm
-      opt.weight.vec <- opt.weight.vec - step.size * cost.gradient.vec # Is this L1 norm gradient?
-      cost <-
-        sum(1 + exp(-y.vec * (X.scaled.mat %*% t(
-          initial.weight.vec
-        )))) + penalty * sum(initial.weight.vec ^ 2)
+    # loss.gradient.vec <- -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.weight.vec)))
+    # cost.gradient.vec <- loss.gradient.vec + penalty * opt.weight.vec # This is for L1 norm
+    
+    while (norm(abs(W.gradient.vec)) > opt.thresh){ 
+      W.gradient.vec <- -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec))) +  penalty * opt.W.vec
+      beta.gradient <-  -sum(y.vec) / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + opt.beta)))
+      
+      opt.W.vec <- opt.W.vec - step.size * W.gradient.vec
+      opt.beta <- opt.beta - step.size * W.gradient.vec
+      # opt.weight.vec <- opt.weight.vec - step.size * cost.gradient.vec # Is this L1 norm gradient?
     }
     
     # # Iteration # L1 norm?
@@ -141,6 +145,8 @@ LMLogisticLossL2 <-
     #       initial.weight.vec
     #     )))) + penalty * sum(initial.weight.vec ^ 2)
     # }
+    
+    opt.weight.vec <- c(opt.beta, opt.W.vec) #opt.weight.vec is p+1
     
     return(opt.weight.vec)
   }

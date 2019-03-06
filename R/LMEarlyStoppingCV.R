@@ -48,21 +48,21 @@ LMSquareLossEarlyStoppingCV <-
       
       #Calculate train.loss
       W.mat <-
-        LMSquareLossIterations(X.mat[train.index, ], y.vec[train.index, ], max.iterations)
+        LMSquareLossIterations(X.mat[train.index,], y.vec[train.index,], max.iterations)
       
-      train.predit <- X.mat[train.index, ] %*% W.mat
-      train.loss <- (train.predit - y.vec[train.index, ]) ^ 2
+      train.predit <- X.mat[train.index,] %*% W.mat
+      train.loss <- (train.predit - y.vec[train.index,]) ^ 2
       
       #Calculate validation.loss
-      validation.predict <- X.mat[validation.index, ] %*% W.mat
+      validation.predict <- X.mat[validation.index,] %*% W.mat
       validation.loss <-
-        (validation.predict - y.vec[validation.index, ]) ^ 2
+        (validation.predict - y.vec[validation.index,]) ^ 2
       
       mean.train.loss.vec <- colMeans(train.loss)
       mean.validation.loss.vec <- colMeans(validation.loss)
       
-      train.loss.mat[fold.i, ] = mean.train.loss.vec
-      validation.loss.mat[fold.i, ] = mean.validation.loss.vec
+      train.loss.mat[fold.i,] = mean.train.loss.vec
+      validation.loss.mat[fold.i,] = mean.validation.loss.vec
     }
     
     mean.train.loss.vec <- colMeans(train.loss.mat)
@@ -117,7 +117,6 @@ LMLogisticLossEarlyStoppingCV <-
            fold.vec = NULL,
            max.iteration,
            step.size = 0.5) {
-
     # Check type and dimension
     if (!all(is.numeric(X.mat), is.matrix(X.mat))) {
       stop("X.mat must be a numeric matrix")
@@ -155,6 +154,12 @@ LMLogisticLossEarlyStoppingCV <-
     n.features <- ncol(X.mat)
     n.folds <- length(unique(fold.vec))
     
+    # If y contains 0 and 1 then match to -1, 1
+    if (y.vec %in% c(0, 1)) {
+      y.vec <- 2 * (y.vec - 0.5) # Maybe a better way?
+    }
+    
+    
     train.loss.mat <-
       matrix(0, nrow = n.folds, ncol = max.iteration)
     validation.loss.mat <-
@@ -174,15 +179,18 @@ LMLogisticLossEarlyStoppingCV <-
         
         # W.mat is [(p + 1) x max.iteration]
         W.mat <-
-          LMLogisticLossIterations(X.mat[train.index,], y.vec[train.index], max.iteration, step.size) # Do we need to expose step.size?
+          LMLogisticLossIterations(X.mat[train.index, ], y.vec[train.index], max.iteration, step.size) # Do we need to expose step.size?
         
+        prediction.vec <-
+          ifelse(cbind(1, X.mat)[validation.index, ] %*% W.mat > 0.5, 1,-1) # Use cbind here because W.mat is (P + 1) x max.iteration
+        
+        # Not correct here, need recalculate, because it is a binary classification.
         if (validation.set == "train") {
-          train.loss.mat[fold.index, ] <-
-            colMeans(cbind(1, X.mat)[validation.index,] %*% W.mat - y.vec[validation.index]) # Use cbind here because W.mat is (P + 1) x max.iteration
+          train.loss.mat[fold.index,] <-
+            colMeans(prediction.vec != y.vec[validation.index])
         } else{
-          validation.loss.mat[fold.index, ] <-
-            colMeans(cbind(X.mat)[validation.index,] %*% W.mat - y.vec[validation.index])
-
+          validation.loss.mat[fold.index,] <-
+            colMeans(prediction.vec != y.vec[validation.index])
         }
       }
     }
@@ -193,8 +201,8 @@ LMLogisticLossEarlyStoppingCV <-
     
     weight.mat <-
       LMLogisticLossIterations(X.mat, y.vec, selected.steps, step.size)
-    weight.vec <- rbind(1, weight.mat)[, selected.steps]
-
+    weight.vec <- weight.mat[, selected.steps] # weight.vec is p+1 length
+    
     
     predict <- function(testX.mat) {
       # Check type and dimension
@@ -204,10 +212,11 @@ LMLogisticLossEarlyStoppingCV <-
         stop("testX.mat must be a numeric matrix with n.features columns")
       }
       
+      # testX.mat is of size [n x (p + 1)]
       prediction.vec <-
-        cbind(1, testX.mat) %*% t(weight.vec) # testX.mat is of size [n x (p + 1)]
-
-      return(prediction)
+        ifelse(cbind(1, testX.mat) %*% t(weight.vec) > 0.5, 1,-1) # Should this be 0 or -1?
+      
+      return(prediction.vec)
     }
     
     
