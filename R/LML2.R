@@ -42,19 +42,25 @@ LMSquareLossL2 <-
     }
     
     weight.vec <- initial.weight.vec
+    intercept.scalar <- 0
     # Compute the gradient
     while (TRUE) {
-      grad.cost.func <- 2 * t(X.scaled.mat) %*%
-        (X.scaled.mat %*% weight.vec - y.vec) + 2 * penalty * weight.vec
+      grad.cost.func.slope <- 2 * t(X.scaled.mat) %*%
+        (X.scaled.mat %*% weight.vec + c(rep(1, dim(X.scaled.mat)[1]))
+         * intercept.scalar - y.vec) + 2 * penalty * weight.vec
+      
+      grad.cost.func.intercept <- 2 * t(c(rep(1, dim(X.scaled.mat)[1]))) %*% 
+        (c(rep(1, dim(X.mat)[1])) * intercept.scalar + X.scaled.mat %*% weight.vec - y.vec)
       
       if (sum(abs(grad.cost.func)) <= opt.thresh) {
         break
       } else{
-        weight.vec <- weight.vec - penalty * (grad.cost.func)
+        weight.vec <- weight.vec - penalty * grad.cost.func.slope
+        intercept.scalar <- intercept.scalar - penalty * grad.cost.func.intercept
       }
       
     }
-    optimal.weight <- weight.vec
+    optimal.weight <- c(intercept.scalar, weight.vec)
     return(optimal.weight)
     
   }
