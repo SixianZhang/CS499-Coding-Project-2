@@ -76,7 +76,7 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
 #'
 #' @examples
 LMLogisticLossL2penalties <-
-  function(X.mat, y.vec, penalty.vec, opt.thresh = 5) {
+  function(X.mat, y.vec, penalty.vec, opt.thresh = 0.5) {
     # Check type and dimension
     if (!all(is.numeric(X.mat), is.matrix(X.mat))) {
       stop("X.mat must be a numeric matrix")
@@ -125,7 +125,7 @@ LMLogisticLossL2penalties <-
     W.mat <- matrix(0, nrow = n.features + 1, ncol = n.penalties)
     # W.temp.mat <- W.mat
     
-    for (i.penalty in (1:n.penalties)) {
+    for (i.penalty in c(1:n.penalties)) {
       W.mat[, i.penalty] <-  # W.mat is (p+1) x i
         LMLogisticLossL2(X.scaled.mat,
                          y.vec,
@@ -136,7 +136,7 @@ LMLogisticLossL2penalties <-
     }
     
     intercept.vec <-   
-      feature.mean.vec %*% feature.sd.mat %*% W.mat[-1,] + W.mat[1,] # W.mat is the beta.vec
+      -feature.mean.vec %*% feature.sd.mat %*% W.mat[-1,] + W.mat[1,] # W.mat is the beta.vec
     W.mat <- rbind(intercept.vec, feature.sd.mat %*% W.mat[-1,])
     
     return(W.mat) # W.mat is (p + 1) x i

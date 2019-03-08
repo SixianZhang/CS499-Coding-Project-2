@@ -190,7 +190,7 @@ LMLogisticLossIterations <-
     
     # unscaling
     intercept.vec <-
-      feature.mean.vec %*% feature.sd.mat %*% W.mat + beta.vec
+      -feature.mean.vec %*% feature.sd.mat %*% W.mat + beta.vec
     W.mat <- feature.sd.mat %*% W.mat
     W.mat <- rbind(intercept.vec, W.mat)
     

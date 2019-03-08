@@ -5,10 +5,12 @@
 data(spam, package = "ElemStatLearn")
 data(SAheart, package = "ElemStatLearn")
 data(zip.train, package = "ElemStatLearn")
+
 data(prostate, package = "ElemStatLearn")
 data(ozone, package = "ElemStatLearn")
 
 data.list <- list(
+<<<<<<< HEAD
   # spam = list(
   #   features = as.matrix(spam[, 1:57]),
   #   labels = ifelse(spam$spam == "spam", 1, 0),
@@ -114,7 +116,7 @@ for (data.name in names(data.list)) {
   }
   
   dot.x <- model.list$selected.penalty
-  dot.y <- model.list$mean.validation.loss.vec[dot.x]
+  dot.y <- model.list$mean.validation.loss.vec[penalty.vec == model.list$selected.penalty]
   
   matplot(
     y = cbind(model.list$mean.validation.loss.vec, model.list$mean.train.loss.vec),
