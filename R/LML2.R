@@ -36,33 +36,12 @@ LMSquareLossL2 <-
              opt.thresh > 0)) {
       stop("opt.thresh must be a positive numeric scalar.")
     }
-    
+      
     if (!all(is.vector(initial.weight.vec),
              is.numeric(initial.weight.vec))) {
       stop("initial.weight.vec must be a numeric vector.")
     }
     
-<<<<<<< HEAD
-    n.train <- nrow(X.scaled.mat)
-    n.feature <- ncol(X.scaled.mat)
-    
-    opt.weight.vec <- initial.weight.vec[-1]
-    opt.beta <- initial.weight.vec[1]
-    
-    W.gradient.vec <- 2 * t(X.scaled.mat) %*% (X.scaled.mat %*% opt.weight.vec  + rep(opt.beta, n.train) - y.vec)/n.train + 2 * penalty * opt.weight.vec
-    
-    beta.gradient <- 2 * sum(X.scaled.mat %*% opt.weight.vec + rep(opt.beta, n.train) - y.vec)/n.train
-    
-    # Compute the gradient
-    while (sum(abs(W.gradient.vec)) > opt.thresh) {
-      opt.weight.vec <- opt.weight.vec - step.size * W.gradient.vec
-      
-      opt.beta <- opt.beta - step.size * beta.gradient
-      
-      W.gradient.vec <- 2 * t(X.scaled.mat) %*% (X.scaled.mat %*% opt.weight.vec  + rep(opt.beta, n.train) - y.vec)/n.train + 2 * penalty * opt.weight.vec
-      
-      beta.gradient <- 2 * sum(X.scaled.mat %*% opt.weight.vec + rep(opt.beta, n.train) - y.vec)/n.train
-=======
     weight.vec <- initial.weight.vec[-1]
     intercept.scalar <- initial.weight.vec[1]
     n.train = dim(X.scaled.mat)[1]
@@ -82,12 +61,10 @@ LMSquareLossL2 <-
         weight.vec <- weight.vec - step.size * grad.cost.func.slope
         intercept.scalar <- intercept.scalar - step.size * grad.cost.func.intercept
       }
->>>>>>> 8e866f0011e5c22523c726ecb1540ab409041d1d
       
     }
-    opt.weight.vec <- c(opt.beta, opt.weight.vec)
-    
-    return(opt.weight.vec)
+    optimal.weight <- c(intercept.scalar, weight.vec)
+    return(optimal.weight)
     
   }
 
@@ -165,7 +142,7 @@ LMLogisticLossL2 <-
     
     n.iteration <- 0
     
-    while (sum(abs(W.gradient.vec)) > opt.thresh &&
+    while (norm(abs(W.gradient.vec)) > opt.thresh &&
            n.iteration <= max.iteration) {
       n.iteration = n.iteration + 1
       W.gradient.vec <-

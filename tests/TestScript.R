@@ -5,16 +5,12 @@
 data(spam, package = "ElemStatLearn")
 data(SAheart, package = "ElemStatLearn")
 data(zip.train, package = "ElemStatLearn")
-
+zip.train <- zip.train[zip.train[,1] %in% c(0,1),]
 data(prostate, package = "ElemStatLearn")
 data(ozone, package = "ElemStatLearn")
 
 data.list <- list(
-<<<<<<< HEAD
-# spam = list(
-=======
   # spam = list(
->>>>>>> 8e866f0011e5c22523c726ecb1540ab409041d1d
   #   features = as.matrix(spam[, 1:57]),
   #   labels = ifelse(spam$spam == "spam", 1, 0),
   #   is.01 = TRUE
@@ -25,16 +21,16 @@ data.list <- list(
   #   labels = SAheart$chd,
   #   is.01 = TRUE
   # ),
-  
-  # zip.train = list(
-  #   features = as.matrix(zip.train[, -1]),
-  #   labels = zip.train[, 1],
-  #   is.01 = TRUE
-  # ),
 
-  # prostate = list(features = as.matrix(prostate[, 1:8]),
-  #                 labels = prostate$lpsa,
-  #                 is.01 = FALSE),
+  zip.train = list(
+    features = as.matrix(zip.train[, -1]),
+    labels = zip.train[, 1],
+    is.01 = TRUE
+  ),
+
+  prostate = list(features = as.matrix(prostate[, 1:8]),
+                  labels = prostate$lpsa,
+                  is.01 = FALSE),
 
   ozone = list(features = as.matrix(ozone[,-1]),
                labels = ozone[, 1],
