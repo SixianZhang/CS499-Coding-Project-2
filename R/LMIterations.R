@@ -99,14 +99,14 @@ LMLogisticLossIterations <-
       stop("y.vec must be a numeric vector of length nrow(X.mat)")
     }
     
-    if (!all(
-      is.numeric(max.iterations),
-      is.integer(max.iterations),
-      length(max.iterations) == 1,
-      max.iterations > 1
-    )) {
-      stop("max.iterations must be an integer scalar greater than one")
-    }
+    # if (!all(
+    #   is.numeric(max.iterations),
+    #   is.integer(max.iterations),
+    #   length(max.iterations) == 1,
+    #   max.iterations >= 1
+    # )) {
+    #   stop("max.iterations must be an integer scalar greater than one")
+    # }
     
     if (!all(is.numeric(step.size), length(step.size) == 1, step.size > 0)) {
       stop("step.size must be a positive scalar")
@@ -124,12 +124,13 @@ LMLogisticLossIterations <-
       sqrt(rowSums((t(X.mat) - feature.mean.vec) ^ 2) / n.train) # try to use sd but that gives the sd for the whole matrix
     
     # Check if there is a feature with 0 deviation
-    if (!feature.sd.vec != 0) {
-      # Remove that feature
-      
-    }
+
+    # column with zero variance will become zero at the end
+    feature.mean.vec[feature.mean.vec == 0] <- 1
     
-    feature.sd.mat <- 1 / diag(feature.sd.vec)
+    feature.sd.mat <- diag(1 / feature.sd.vec)
+    
+
     
     X.scaled.mat <-
       t((t(X.mat) - feature.mean.vec) / feature.sd.vec) # Use scale to simplify.
@@ -138,11 +139,11 @@ LMLogisticLossIterations <-
     W.mat <- matrix(0, nrow = n.features, ncol = max.iterations)
     beta.vec <- rep(0, l = max.iterations)
     
-    W.temp.vec <- W.mat[, 0]
+    W.temp.vec <- W.mat[, 1]
     beta.temp <- 0
     
     # Iteration
-    for (n.interations in (1:max.iterations)) {
+    for (n.iterations in (1:max.iterations)) {
       # Calculate L(w)'
       # This is training without interception
       # loss.gradient.vec <-
@@ -151,14 +152,14 @@ LMLogisticLossIterations <-
       # This is trainging with interception
       # Calculate L(w)'
       W.gradient.vec <-
-        -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (
-          X.scaled.mat %*% W.temp.vec + beta.temp
-        )))
+        -t(X.scaled.mat) %*% (y.vec / (1 + exp(y.vec * (
+          X.scaled.mat %*% W.temp.vec + rep(1,n.train) * beta.temp
+        ))))
       # Calculate L(beta)'
       beta.gradient <-
-        -sum(y.vec) / (1 + exp(y.vec * (
-          X.scaled.mat %*% W.temp.vec + beta.temp
-        )))
+        -sum(y.vec / (1 + exp(y.vec * (
+          X.scaled.mat %*% W.temp.vec + rep(1,n.train) * beta.temp
+        ))))
       
       # Take a step
       W.mat[, n.iterations] <-
@@ -166,7 +167,7 @@ LMLogisticLossIterations <-
       beta.vec[n.iterations] <-
         beta.temp - step.size * beta.gradient
       
-      W.temp.vec <- W.mat[, n.interations]
+      W.temp.vec <- W.mat[, n.iterations]
       beta.temp <- beta.vec[n.iterations]
     }
     
@@ -177,6 +178,4 @@ LMLogisticLossIterations <-
     W.mat <- rbind(intercept.vec, W.mat)
     
     return(W.mat)
-    
-    
   }

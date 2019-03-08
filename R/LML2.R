@@ -80,8 +80,8 @@ LMLogisticLossL2 <-
            penalty,
            opt.thresh,
            initial.weight.vec,
-           step.size = 0.5,
-           max.iteration = 100) {
+           step.size = 0.01,
+           max.iteration = 10) {
     
     # Check type and dimension
     if (!all(is.numeric(X.scaled.mat), is.matrix(X.scaled.mat))) {
@@ -107,7 +107,7 @@ LMLogisticLossL2 <-
     if (!all(
       is.numeric(initial.weight.vec),
       is.vector(initial.weight.vec),
-      length(initial.weight.vec) == ncol(X.scaled.mat)
+      length(initial.weight.vec) == ncol(X.scaled.mat) + 1
     )) {
       stop("initial.weight.vec must be a numeric vector of length ncol(X.scaled.mat) + 1") # <- Change here
     }
@@ -115,23 +115,28 @@ LMLogisticLossL2 <-
     # Initializing
     # here n.feature is also p
     n.features <- ncol(X.scaled.mat)
+    n.trains <- nrow(X.scaled.mat)
     
     opt.W.vec = initial.weight.vec[-1]
     opt.beta = initial.weight.vec[1]
     
-    W.gradient.vec <- -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec))) +  penalty * opt.W.vec
-    beta.gradient <-  -sum(y.vec) / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + opt.beta)))
+    W.gradient.vec <- -t(X.scaled.mat) %*% (y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta)))) +  2 * penalty * opt.W.vec
+    beta.gradient <-  -sum(y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta))))
     
     # loss.gradient.vec <- -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.weight.vec)))
     # cost.gradient.vec <- loss.gradient.vec + penalty * opt.weight.vec # This is for L1 norm
     
-    while (norm(abs(W.gradient.vec)) > opt.thresh){ 
-      W.gradient.vec <- -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec))) +  penalty * opt.W.vec
-      beta.gradient <-  -sum(y.vec) / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + opt.beta)))
+    n.iteration <- 0
+    
+    while (norm(abs(W.gradient.vec)) > opt.thresh && n.iteration <= max.iteration){ 
+      n.iteration = n.iteration + 1
+      W.gradient.vec <- -t(X.scaled.mat) %*% (y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta)))) +  2* penalty * opt.W.vec
+      beta.gradient <-  -sum(y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta))))
       
       opt.W.vec <- opt.W.vec - step.size * W.gradient.vec
-      opt.beta <- opt.beta - step.size * W.gradient.vec
-      # opt.weight.vec <- opt.weight.vec - step.size * cost.gradient.vec # Is this L1 norm gradient?
+      opt.beta <- opt.beta - step.size * beta.gradient
+      
+      # opt.weight.vec <- opt.weight.vec - step.size * cost.gradient.vec # Is this L1 norm gradient? 
     }
     
     # # Iteration # L1 norm?

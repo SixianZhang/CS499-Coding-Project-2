@@ -16,7 +16,7 @@ data.list <- list(
   ),
   
   SAheart = list(
-    features = as.matrix(SAheart[, 1:9]),
+    features = as.matrix(SAheart[, c(1:4,6:9)]),
     labels = SAheart$chd,
     is.01 = TRUE
   )
@@ -42,10 +42,11 @@ for (data.name in names(data.list)) {
   
   #Check data type here:
   
-  set.seed(1)
+  set.seed(2)
   
   fold.vec <- sample(rep(1:n.folds, l = length(data.set$labels)))
   
+  penalty.vec <- seq(5, 0.1, by = -0.1)
   
   for (i.fold in (1:n.folds)) {
     train.index <- fold.vec != i.fold
@@ -56,14 +57,12 @@ for (data.name in names(data.list)) {
     x.test <- data.set$feature[test.index, ]
     y.test <- data.set$labels[test.index]
     
-    penalty.vec <- seq(5, 0.1, by = -0.1)
-    
     if (data.set$is.01) {
       # binary data
       earlystopping.list <-
         LMLogisticLossEarlyStoppingCV(x.train, y.train, NULL, 100L, 0.5)
       L2.list <-
-        LMLogisticLossL2CV(x.train,y.train, NULL, penalty.vec)
+        LMLogisticLossL2CV(x.train, y.train, NULL, penalty.vec)
       
       earlystopping.predict <-
         ifelse(earlystopping.list$predict(x.test) > 0.5, 1, 0)
@@ -87,10 +86,10 @@ for (data.name in names(data.list)) {
     L2.loss <- mean((L2.predict - y.test) ^ 2)
     baseline.loss <- mean((baseline.predict - y.test) ^ 2)
     
-    test.loss.mat[n.folds,] = c(earlystopping.loss, L2.loss, baseline.loss)
+    test.loss.mat[i.fold,] = c(earlystopping.loss, L2.loss, baseline.loss)
   }
   # show result
-  colnames(test.loss.mat, c("Early Stopping", "L2", "Baseline"))
+  colnames(test.loss.mat) <- c("Early Stopping", "L2", "Baseline")
   
   test.loss.mat
   
@@ -103,6 +102,40 @@ for (data.name in names(data.list)) {
     beside = TRUE
   )
   
+  # Run CV for whole dataset
+  if(data.set$is.01){
+    # Binary
+    model.list <- LMLogisticLossL2CV(data.set$features, data.set$labels, NULL, penalty.vec)
+  }else{
+    # Regression
+    model.list <- LMSquareLossL2CV(data.set$features,data.set$labels,NULL, penalty.vec)
+  }
   
+  dot.x <- model.list$selected.penalty
+  dot.y <- model.list$mean.validation.loss.vec[dot.x]
   
+  matplot(
+    y = cbind(model.list$mean.validation.loss.vec, model.list$mean.train.loss.vec),
+    x = as.matrix(penalty.vec),
+    xlab = "penalty",
+    ylab = "mean loss value",
+    type = "l",
+    lty = 1:2,
+    pch = 15,
+    col = c(17)
+  )
+  
+  matpoints(x = dot.x,
+            y = dot.y,
+            col = 2,
+            pch = 19)
+  legend(
+    x = length(penalty.vec),
+    0,
+    c("Validation loss", "Train loss"),
+    lty = 1:2,
+    xjust = 1,
+    yjust = 0
+  )
 }
+
