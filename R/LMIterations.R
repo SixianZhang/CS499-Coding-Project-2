@@ -143,7 +143,7 @@ LMLogisticLossIterations <-
     # Check if there is a feature with 0 deviation
 
     # column with zero variance will become zero at the end
-    feature.mean.vec[feature.mean.vec == 0] <- 1
+    feature.sd.vec[feature.sd.vec == 0] <- 1
     
     feature.sd.mat <- diag(1 / feature.sd.vec)
     
@@ -171,12 +171,12 @@ LMLogisticLossIterations <-
       W.gradient.vec <-
         -t(X.scaled.mat) %*% (y.vec / (1 + exp(y.vec * (
           X.scaled.mat %*% W.temp.vec + rep(1,n.train) * beta.temp
-        ))))
+        ))))/ n.train
       # Calculate L(beta)'
       beta.gradient <-
         -sum(y.vec / (1 + exp(y.vec * (
           X.scaled.mat %*% W.temp.vec + rep(1,n.train) * beta.temp
-        ))))
+        ))))/n.train  
       
       # Take a step
       W.mat[, n.iterations] <-
