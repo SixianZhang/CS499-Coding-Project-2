@@ -39,62 +39,79 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     stop("penalty.vec must be a non-negative decreasing numeric vector")
   }
   
-  # Find the num of K-fold
+  
+  # Initiallize
+  n.features <- ncol(X.mat)
   n.folds <- length(unique(fold.vec))
-  
+  train.loss.mat <-
+    matrix(0, nrow = n.folds, ncol = length(penalty.vec))
   validation.loss.mat <-
-    matrix(rep(0, n.folds * length(penalty.vec)),
-           n.folds, length(penalty.vec))
-  train.loss.mat <- matrix(rep(0, n.folds * length(penalty.vec)),
-                           n.folds, length(penalty.vec))
+    matrix(0, nrow = n.folds, ncol = length(penalty.vec))
   
-  #Learning process for each fold
-  for (fold.i in seq_len(n.folds)) {
-    train.index <- which(fold.vec != fold.i)
-    validation.index <- which(fold.vec == fold.i)
+  # Iterating folds
+  for (fold.index in (1:n.folds)) {
+    train.index <- which(fold.vec != fold.index)
     
-    #Calculate train.loss
-    W.mat <-
-      LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index], penalty.vec)
-    
-    train.predit <- cbind(1, X.mat[train.index, ]) %*% W.mat
-    train.loss <- (train.predit - y.vec[train.index]) ^ 2
-    
-    #Calculate validation.loss
-    validation.predict <- cbind(1,X.mat[validation.index, ]) %*% W.mat
-    validation.loss <-
-      (validation.predict - y.vec[validation.index]) ^ 2
-    
-    mean.train.loss.vec <- colMeans(train.loss)
-    mean.validation.loss.vec <- colMeans(validation.loss)
-    
-    train.loss.mat[fold.i, ] = mean.train.loss.vec
-    validation.loss.mat[fold.i, ] = mean.validation.loss.vec
+    # Iterating between train and validation splits
+    for (validation.set in c("train", "validation")) {
+      if (validation.set == "train") {
+        validation.index <- which(fold.vec != fold.index)
+      } else{
+        validation.index <- which(fold.vec == fold.index)
+      }
+      
+      W.mat <- # (p+1) * i
+        LMSquareLossL2penalties(X.mat[train.index,], y.vec[train.index], penalty.vec) # Do we need to expose step.size?
+      
+      prediction.vec <- cbind(1, X.mat)[validation.index, ] %*% W.mat 
+      
+      if (validation.set == "train") {
+        
+        train.loss.mat[fold.index, ] <-
+          colMeans(abs(prediction.vec - y.vec[validation.index])^2)
+      } else{
+        validation.loss.mat[fold.index, ] <-
+          colMeans(abs(prediction.vec - y.vec[validation.index])^2)
+      }
+    }
   }
-  
   mean.train.loss.vec <- colMeans(train.loss.mat)
   mean.validation.loss.vec <- colMeans(validation.loss.mat)
+  selected.penalty.index <- which.min(mean.validation.loss.vec)
   
+<<<<<<< HEAD
+  weight.vec <- # (p + 1) length
+    LMSquareLossL2penalties(X.mat, y.vec, penalty.vec)[, selected.penalty.index]
+=======
   selected.penalty <-
     penalty.vec[which.min(mean.validation.loss.vec)]
   W.mat <-
     LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index], penalty.vec)
   weight.vec <- W.mat[, which(penalty.vec == selected.penalty)]
+<<<<<<< HEAD
+=======
+>>>>>>> 8e866f0011e5c22523c726ecb1540ab409041d1d
+>>>>>>> 4c1580b058cec14b72b2a13642b8078ba44a69ab
   
   predict <- function(testX.mat) {
+    # Check type and dimension
     if (!all(is.numeric(testX.mat),
              is.matrix(testX.mat),
-             ncol(testX.mat) == ncol(X.mat))) {
-      stop("testX.mat must be a numeric matrix with ncol(X.mat) columns")
+             ncol(testX.mat) == n.features)) {
+      stop("testX.mat must be a numeric matrix with n.features columns")
     }
-    prediction.vec <- cbind(1, testX.mat) %*% weight.vec
+    
+    # prediction.vec <- ifelse(cbind(1,testX.mat) %*% t(weight.vec) > 0.5, 1, -1)
+    prediction.vec <- cbind(1,testX.mat) %*% weight.vec
+    
+    return(prediction.vec)
   }
   
   result.list <- list(
     mean.validation.loss.vec = mean.validation.loss.vec,
     mean.train.loss.vec = mean.train.loss.vec,
     penalty.vec = penalty.vec,
-    selected.penalty = selected.penalty,
+    selected.penalty = penalty.vec[selected.penalty.index],
     weight.vec = weight.vec,
     predict = predict
   )

@@ -18,22 +18,33 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
            length(y.vec) == nrow(X.mat))) {
     stop("y.vec must be a numeric vector of the same number of rows as X.mat.")
   }
-  
-  is.decending <- function(vec) {
-    result <- all(diff(vec) < 0)
-    return(result)
-  }
-  
+
   if (!all(
     is.vector(penalty.vec),
     is.numeric(penalty.vec),
-    penalty.vec >= 0,
-    is.decending(penalty.vec)
+    penalty.vec >= 0
   )) {
     stop("penalty.vec must be a non-negative decreasing numeric vector")
   }
   
   #Obatin X.scaled.mat from the orginal X.mat, to make sure std = 1, u = 0
+<<<<<<< HEAD
+  n.train <- nrow(X.mat)
+  n.feature <- ncol(X.mat)
+    
+  # Scaling
+  feature.mean.vec <- colMeans(X.mat)
+  feature.std.vec <- sqrt(rowSums((t(X.mat) - feature.mean.vec)^2) / n.train)
+  feature.std.mat <- diag(1/feature.std.vec)
+
+  X.scaled.mat <- t((t(X.mat) - feature.mean.vec)/feature.std.vec)
+
+  # Initializing
+  W.mat <- matrix(0, nrow = n.feature + 1, ncol = length(penalty.vec))
+  opt.weight.vec <- W.mat[,1]
+  for (i.penalty in c(1:length(penalty.vec))) {
+    opt.weight.vec <- LMSquareLossL2(X.scaled.mat,
+=======
   num.train <- dim(X.mat)[1]
   num.feature <- dim(X.mat)[2]
   
@@ -53,16 +64,30 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
   optimal.weight.vec <- c(rep(0, (num.feature + 1)))
   for (index in seq(length(penalty.vec))) {
     optimal.weight.vec <- LMSquareLossL2(X.scaled.mat,
+>>>>>>> 8e866f0011e5c22523c726ecb1540ab409041d1d
                                          y.vec = y.vec,
-                                         penalty = penalty.vec[index],
-                                         initial.weight.vec = optimal.weight.vec)
-    slope.mat[, index] <- optimal.weight.vec
+                                         penalty = penalty.vec[i.penalty],
+                                         initial.weight.vec = opt.weight.vec)
+    W.mat[, i.penalty] <- opt.weight.vec
   }
   
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+  intercept.vec <- -feature.mean.vec %*% feature.std.mat%*%W.mat[-1,] + W.mat[1,]
+  W.mat <- rbind(intercept.vec, feature.std.mat %*% W.mat[-1,])
+
+  
+=======
+>>>>>>> 4c1580b058cec14b72b2a13642b8078ba44a69ab
   unscaled.slope.mat <- X.std.mat %*% slope.mat[-1,]
   unscaled.intercept.vec <- -X.mean.vec %*% X.std.mat %*% slope.mat[-1,] + t(slope.mat[1,])
   
   W.mat <- rbind(unscaled.intercept.vec, unscaled.slope.mat)
+<<<<<<< HEAD
+=======
+>>>>>>> 8e866f0011e5c22523c726ecb1540ab409041d1d
+>>>>>>> 4c1580b058cec14b72b2a13642b8078ba44a69ab
   return(W.mat)
 }
 
