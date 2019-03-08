@@ -112,7 +112,7 @@ for (data.name in names(data.list)) {
   }
   
   dot.x <- model.list$selected.penalty
-  dot.y <- model.list$mean.validation.loss.vec[dot.x]
+  dot.y <- model.list$mean.validation.loss.vec[penalty.vec == model.list$selected.penalty]
   
   matplot(
     y = cbind(model.list$mean.validation.loss.vec, model.list$mean.train.loss.vec),
