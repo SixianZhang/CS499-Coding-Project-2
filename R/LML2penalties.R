@@ -18,48 +18,43 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
            length(y.vec) == nrow(X.mat))) {
     stop("y.vec must be a numeric vector of the same number of rows as X.mat.")
   }
-  
-  is.decending <- function(vec) {
-    result <- all(diff(vec) < 0)
-    return(result)
-  }
-  
+
   if (!all(
     is.vector(penalty.vec),
     is.numeric(penalty.vec),
-    penalty.vec >= 0,
-    is.decending(penalty.vec)
+    penalty.vec >= 0
   )) {
     stop("penalty.vec must be a non-negative decreasing numeric vector")
   }
   
   #Obatin X.scaled.mat from the orginal X.mat, to make sure std = 1, u = 0
-  num.train <- dim(X.mat)[1]
-  num.feature <- dim(X.mat)[2]
+  n.train <- nrow(X.mat)
+  n.feature <- ncol(X.mat)
+    
+  # Scaling
+  # feature.mean.vec <- colMeans(X.mat)
+  # feature.std.vec <- sqrt(rowSums((t(X.mat) - feature.mean.vec)^2) / n.train)
+  # feature.std.mat <- diag(1/feature.std.vec)
+  # 
+  # X.scaled.mat <- t((t(X.mat) - feature.mean.vec)/feature.std.vec)
   
-  X.mean.vec <- colMeans(X.mat)
-  X.std.vec <-
-    sqrt(rowSums((t(X.mat) - X.mean.vec) ^ 2) / num.train)
-  X.std.mat <- diag(num.feature) * (1 / X.std.vec)
+  X.scaled.mat <- X.mat
   
-  X.scaled.mat <- t((t(X.mat) - X.mean.vec) / X.std.vec)
-  
-  slope.mat <- matrix(c(
-    rep(0, (num.feature + 1) * length(penalty.vec)),
-    num.feature + 1,
-    length(penalty.vec)
-  ))
-  
-  optimal.weight.vec <- c(rep(0, (num.feature + 1)))
-  for (index in seq(length(penalty.vec))) {
-    optimal.weight.vec <- LMSquareLossL2(X.scaled.mat,
+  # Initializing
+  W.mat <- matrix(0, nrow = n.feature + 1, ncol = length(penalty.vec))
+  opt.weight.vec <- W.mat[,1]
+  for (i.penalty in c(1:length(penalty.vec))) {
+    opt.weight.vec <- LMSquareLossL2(X.scaled.mat,
                                          y.vec = y.vec,
-                                         penalty = penalty.vec[index],
-                                         initial.weight.vec = optimal.weight.vec)
-    slope.mat[, index] <- optimal.weight.vec
+                                         penalty = penalty.vec[i.penalty],
+                                         initial.weight.vec = opt.weight.vec)
+    W.mat[, i.penalty] <- opt.weight.vec
   }
   
-  W.mat <- slope.mat
+  # intercept.vec <- -feature.mean.vec %*% feature.std.mat%*%W.mat + W.mat[1,]
+  # W.mat <- rbind(intercept.vec, feature.mean.mat %*% W.mat[-1,])
+  
+  
   return(W.mat)
 }
 
@@ -76,7 +71,7 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
 #'
 #' @examples
 LMLogisticLossL2penalties <-
-  function(X.mat, y.vec, penalty.vec, opt.thresh = 5) {
+  function(X.mat, y.vec, penalty.vec, opt.thresh = 0.5) {
     # Check type and dimension
     if (!all(is.numeric(X.mat), is.matrix(X.mat))) {
       stop("X.mat must be a numeric matrix")
@@ -125,7 +120,7 @@ LMLogisticLossL2penalties <-
     W.mat <- matrix(0, nrow = n.features + 1, ncol = n.penalties)
     # W.temp.mat <- W.mat
     
-    for (i.penalty in (1:n.penalties)) {
+    for (i.penalty in c(1:n.penalties)) {
       W.mat[, i.penalty] <-  # W.mat is (p+1) x i
         LMLogisticLossL2(X.scaled.mat,
                          y.vec,
@@ -136,7 +131,7 @@ LMLogisticLossL2penalties <-
     }
     
     intercept.vec <-   
-      feature.mean.vec %*% feature.sd.mat %*% W.mat[-1,] + W.mat[1,] # W.mat is the beta.vec
+      -feature.mean.vec %*% feature.sd.mat %*% W.mat[-1,] + W.mat[1,] # W.mat is the beta.vec
     W.mat <- rbind(intercept.vec, feature.sd.mat %*% W.mat[-1,])
     
     return(W.mat) # W.mat is (p + 1) x i
