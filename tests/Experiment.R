@@ -74,7 +74,7 @@ for (data.name in names(data.list)) {
     } else{
       # regression data
       earlystopping.list <-
-        LMSquareLossEarlyStoppingCV(x.train, y.train, NULL, 100L)
+        LMSquareLossEarlyStoppingCV(x.train, y.train, NULL, 15L)
       L2.list <- LMSquareLossL2CV(x.train, y.train, NULL, penalty.vec)
       
       earlystopping.predict <- earlystopping.list$predict(x.test)

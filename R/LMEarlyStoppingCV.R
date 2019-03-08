@@ -29,9 +29,15 @@ LMSquareLossEarlyStoppingCV <-
       stop("Input max.iteration must be a greater than 1 integer scalar number.")
     }
     
-    if (!all(is.integer(fold.vec), is.vector(fold.vec))) {
-      stop("fold.vec must be assigned before input and it must be a integer vector")
-    }
+    if (is.null(fold.vec)) {
+      fold.vec <- sample(rep(1:5, l = nrow(X.mat)))
+    } else
+      if (!all(is.numeric(fold.vec),
+               is.vector(fold.vec),
+               length(fold.vec) == nrow(X.mat))) {
+        stop("fold.vec must be a numeric vector of length nrow(X.mat)")
+      }
+    
     # Find the num of K-fold
     n.folds <- length(unique(fold.vec))
     
@@ -48,15 +54,15 @@ LMSquareLossEarlyStoppingCV <-
       
       #Calculate train.loss
       W.mat <-
-        LMSquareLossIterations(X.mat[train.index,], y.vec[train.index,], max.iteration)
+        LMSquareLossIterations(X.mat[train.index,], y.vec[train.index], max.iteration)
       
       train.predit <- cbind(1, X.mat[train.index,]) %*% W.mat
-      train.loss <- (train.predit - y.vec[train.index,]) ^ 2
+      train.loss <- (train.predit - y.vec[train.index]) ^ 2
       
       #Calculate validation.loss
       validation.predict <- cbind(1, X.mat[validation.index,]) %*% W.mat
       validation.loss <-
-        (validation.predict - y.vec[validation.index,]) ^ 2
+        (validation.predict - y.vec[validation.index]) ^ 2
       
       mean.train.loss.vec <- colMeans(train.loss)
       mean.validation.loss.vec <- colMeans(validation.loss)
@@ -71,7 +77,7 @@ LMSquareLossEarlyStoppingCV <-
     #Overall optimal iteration steps
     selected.steps <- which.min(mean.validation.loss.vec)
     W.mat.all <-
-      LMSquareLossIterations(X.mat, y.vec, max.iteration = selected.steps)
+      LMSquareLossIterations(X.mat, y.vec, max.iteration)
     weight.vec <- W.mat.all[, selected.steps]
     
     predict <- function(testX.mat) {

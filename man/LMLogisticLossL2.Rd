@@ -5,7 +5,7 @@
 \title{Linear model L2 regularization with logistic loss, including beta during the training}
 \usage{
 LMLogisticLossL2(X.scaled.mat, y.vec, penalty, opt.thresh,
-  initial.weight.vec, step.size = 0.5, max.iteration = 100)
+  initial.weight.vec, step.size = 0.01, max.iteration = 10)
 }
 \arguments{
 \item{X.scaled.mat}{a numeric matrix of size [n x p]}

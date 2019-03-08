@@ -15,14 +15,15 @@ LMSquareLossL2 <-
            y.vec,
            penalty,
            opt.thresh = 0.5,
-           initial.weight.vec) {
-    if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
+           initial.weight.vec,
+           step.size = 0.01) {
+    if (!all(is.matrix(X.scaled.mat), is.numeric(X.scaled.mat))) {
       stop("X.mat must be a numeric matrix.")
     }
     
     if (!all(is.vector(y.vec),
              is.numeric(y.vec),
-             length(y.vec) == nrow(X.mat))) {
+             length(y.vec) == nrow(X.scaled.mat))) {
       stop("y.vec must be a numeric vector of the same number of rows as X.mat.")
     }
     
@@ -41,22 +42,22 @@ LMSquareLossL2 <-
       stop("initial.weight.vec must be a numeric vector.")
     }
     
-    weight.vec <- initial.weight.vec
-    intercept.scalar <- 0
+    weight.vec <- initial.weight.vec[-1]
+    intercept.scalar <- initial.weight.vec[1]
     # Compute the gradient
     while (TRUE) {
       grad.cost.func.slope <- 2 * t(X.scaled.mat) %*%
-        (X.scaled.mat %*% weight.vec + c(rep(1, dim(X.scaled.mat)[1]))
+        (X.scaled.mat %*% weight.vec + rep(1, dim(X.scaled.mat)[1])
          * intercept.scalar - y.vec) + 2 * penalty * weight.vec
       
       grad.cost.func.intercept <- 2 * t(c(rep(1, dim(X.scaled.mat)[1]))) %*% 
-        (c(rep(1, dim(X.mat)[1])) * intercept.scalar + X.scaled.mat %*% weight.vec - y.vec)
+        (c(rep(1, dim(X.scaled.mat)[1])) * intercept.scalar + X.scaled.mat %*% weight.vec - y.vec)
       
-      if (sum(abs(grad.cost.func)) <= opt.thresh) {
+      if (sum(abs(grad.cost.func.slope)) <= opt.thresh) {
         break
       } else{
-        weight.vec <- weight.vec - penalty * grad.cost.func.slope
-        intercept.scalar <- intercept.scalar - penalty * grad.cost.func.intercept
+        weight.vec <- weight.vec - step.size * grad.cost.func.slope
+        intercept.scalar <- intercept.scalar - step.size * grad.cost.func.intercept
       }
       
     }

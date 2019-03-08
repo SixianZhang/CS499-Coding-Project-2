@@ -5,7 +5,7 @@
 \title{Linear model L2 regularization with square loss}
 \usage{
 LMSquareLossL2(X.scaled.mat, y.vec, penalty, opt.thresh = 0.5,
-  initial.weight.vec)
+  initial.weight.vec, step.size = 0.01)
 }
 \arguments{
 \item{X.scaled.mat}{a numeric matrix of size [n x p]}

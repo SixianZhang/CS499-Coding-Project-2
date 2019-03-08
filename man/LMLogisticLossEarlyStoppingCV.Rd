@@ -14,9 +14,9 @@ LMLogisticLossEarlyStoppingCV(X.mat, y.vec, fold.vec = NULL,
 
 \item{fold.vec}{fold index vector of size [n x 1]}
 
-\item{step.size}{a numeric scaler greater than 0, default is 0.5}
+\item{max.iteration}{integer scalar greater than 1}
 
-\item{max.iterations}{integer scalar greater than 1}
+\item{step.size}{a numeric scaler greater than 0, default is 0.5}
 }
 \value{
 result.list a list with mean.validation.loss.vec,

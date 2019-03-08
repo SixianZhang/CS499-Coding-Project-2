@@ -55,15 +55,15 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     
     #Calculate train.loss
     W.mat <-
-      LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index, ], penalty.vec)
+      LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index], penalty.vec)
     
     train.predit <- cbind(1, X.mat[train.index, ]) %*% W.mat
-    train.loss <- (train.predit - y.vec[train.index, ]) ^ 2
+    train.loss <- (train.predit - y.vec[train.index]) ^ 2
     
     #Calculate validation.loss
     validation.predict <- cbind(1,X.mat[validation.index, ]) %*% W.mat
     validation.loss <-
-      (validation.predict - y.vec[validation.index, ]) ^ 2
+      (validation.predict - y.vec[validation.index]) ^ 2
     
     mean.train.loss.vec <- colMeans(train.loss)
     mean.validation.loss.vec <- colMeans(validation.loss)
@@ -78,7 +78,7 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
   selected.penalty <-
     penalty.vec[which.min(mean.validation.loss.vec)]
   W.mat <-
-    LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index, ], penalty.vec)
+    LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index], penalty.vec)
   weight.vec <- W.mat[, selected.penalty]
   
   predict <- function(testX.mat) {
