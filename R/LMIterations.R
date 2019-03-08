@@ -83,7 +83,7 @@ LMSquareLossIterations <-
       intercept.vec[iter.index] = intercept.vec.temp
       
     }
-    intercept.part1 <- -t(X.mean.vec) %*% X.std.mat %*% slope.mat  #1 x m
+    intercept.part1 <- -X.mean.vec %*% X.std.mat %*% slope.mat  #1 x m
     intercept <- intercept.part1 + t(intercept.vec)
     slope <- X.std.mat %*% slope.mat #p x m
     W.mat <- rbind(intercept, slope) #(p+1) x m

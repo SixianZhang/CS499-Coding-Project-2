@@ -79,8 +79,16 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
   mean.validation.loss.vec <- colMeans(validation.loss.mat)
   selected.penalty.index <- which.min(mean.validation.loss.vec)
   
+<<<<<<< HEAD
   weight.vec <- # (p + 1) length
     LMSquareLossL2penalties(X.mat, y.vec, penalty.vec)[, selected.penalty.index]
+=======
+  selected.penalty <-
+    penalty.vec[which.min(mean.validation.loss.vec)]
+  W.mat <-
+    LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index], penalty.vec)
+  weight.vec <- W.mat[, which(penalty.vec == selected.penalty)]
+>>>>>>> 8e866f0011e5c22523c726ecb1540ab409041d1d
   
   predict <- function(testX.mat) {
     # Check type and dimension

@@ -42,6 +42,7 @@ LMSquareLossL2 <-
       stop("initial.weight.vec must be a numeric vector.")
     }
     
+<<<<<<< HEAD
     n.train <- nrow(X.scaled.mat)
     n.feature <- ncol(X.scaled.mat)
     
@@ -61,6 +62,27 @@ LMSquareLossL2 <-
       W.gradient.vec <- 2 * t(X.scaled.mat) %*% (X.scaled.mat %*% opt.weight.vec  + rep(opt.beta, n.train) - y.vec)/n.train + 2 * penalty * opt.weight.vec
       
       beta.gradient <- 2 * sum(X.scaled.mat %*% opt.weight.vec + rep(opt.beta, n.train) - y.vec)/n.train
+=======
+    weight.vec <- initial.weight.vec[-1]
+    intercept.scalar <- initial.weight.vec[1]
+    n.train = dim(X.scaled.mat)[1]
+    # Compute the gradient
+    while (TRUE) {
+      grad.cost.func.slope <- 2 * t(X.scaled.mat) %*% 
+        (X.scaled.mat %*% weight.vec  + rep(intercept.scalar, n.train) - y.vec)/n.train +
+        2 * penalty * weight.vec
+      
+
+      grad.cost.func.intercept <- 2 * colSums(X.scaled.mat %*% weight.vec + rep(intercept.scalar, n.train) - y.vec)/n.train
+      
+      if (sum(abs(grad.cost.func.slope)) <= opt.thresh) {
+        break
+      } else{
+        
+        weight.vec <- weight.vec - step.size * grad.cost.func.slope
+        intercept.scalar <- intercept.scalar - step.size * grad.cost.func.intercept
+      }
+>>>>>>> 8e866f0011e5c22523c726ecb1540ab409041d1d
       
     }
     opt.weight.vec <- c(opt.beta, opt.weight.vec)
