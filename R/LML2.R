@@ -4,7 +4,7 @@
 #' @param y.vec a numeric matrix of length nrow(X.scaled.mat)
 #' @param penalty a non-negative numeric scalar
 #' @param opt.thresh a positive numeric scalar
-#' @param initial.weight.vec a numeric vector of size ncol(X.scaled.mat) 
+#' @param initial.weight.vec a numeric vector of size ncol(X.scaled.mat)
 #'
 #' @return opt.weight the optimal weight vector of length ncol(X.scaled)
 #' @export
@@ -49,14 +49,16 @@ LMSquareLossL2 <-
         (X.scaled.mat %*% weight.vec + c(rep(1, dim(X.scaled.mat)[1]))
          * intercept.scalar - y.vec) + 2 * penalty * weight.vec
       
-      grad.cost.func.intercept <- 2 * t(c(rep(1, dim(X.scaled.mat)[1]))) %*% 
+      grad.cost.func.intercept <-
+        2 * t(c(rep(1, dim(X.scaled.mat)[1]))) %*%
         (c(rep(1, dim(X.mat)[1])) * intercept.scalar + X.scaled.mat %*% weight.vec - y.vec)
       
       if (sum(abs(grad.cost.func)) <= opt.thresh) {
         break
       } else{
         weight.vec <- weight.vec - penalty * grad.cost.func.slope
-        intercept.scalar <- intercept.scalar - penalty * grad.cost.func.intercept
+        intercept.scalar <-
+          intercept.scalar - penalty * grad.cost.func.intercept
       }
       
     }
@@ -72,11 +74,11 @@ LMSquareLossL2 <-
 #' @param y.vec a numeric matrix of length nrow(X.scaled.mat)
 #' @param penalty a non-negative numeric scalar
 #' @param opt.thresh a positive numeric scalar
-#' @param initial.weight.vec a numeric vector of size ncol(X.scaled.mat) 
+#' @param initial.weight.vec a numeric vector of size ncol(X.scaled.mat)
 #' @param step.size a numeric scalar greater than zero
 #' @param max.iteration a integer scalar greater than one
 #'
-#' @return opt.weight the optimal weight vector of length ncol(X.scaled)     
+#' @return opt.weight the optimal weight vector of length ncol(X.scaled)
 #' @export
 #'
 #' @examples
@@ -88,7 +90,6 @@ LMLogisticLossL2 <-
            initial.weight.vec,
            step.size = 0.01,
            max.iteration = 10) {
-    
     # Check type and dimension
     if (!all(is.numeric(X.scaled.mat), is.matrix(X.scaled.mat))) {
       stop("X.scaled.mat must be a numeric matrix")
@@ -126,23 +127,36 @@ LMLogisticLossL2 <-
     opt.W.vec = initial.weight.vec[-1]
     opt.beta = initial.weight.vec[1]
     
-    W.gradient.vec <- -t(X.scaled.mat) %*% (y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta)))) +  2 * penalty * opt.W.vec
-    beta.gradient <-  -sum(y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta))))
+    W.gradient.vec <-
+      -t(X.scaled.mat) %*% (y.vec / (1 + exp(
+        y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta)
+      ))) +  2 * penalty * opt.W.vec
+    beta.gradient <-
+      -sum(y.vec / (1 + exp(
+        y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta)
+      )))
     
     # loss.gradient.vec <- -t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.weight.vec)))
     # cost.gradient.vec <- loss.gradient.vec + penalty * opt.weight.vec # This is for L1 norm
     
     n.iteration <- 0
     
-    while (norm(abs(W.gradient.vec)) > opt.thresh && n.iteration <= max.iteration){ 
+    while (norm(abs(W.gradient.vec)) > opt.thresh &&
+           n.iteration <= max.iteration) {
       n.iteration = n.iteration + 1
-      W.gradient.vec <- -t(X.scaled.mat) %*% (y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta)))) +  2* penalty * opt.W.vec
-      beta.gradient <-  -sum(y.vec / (1 + exp(y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta))))
+      W.gradient.vec <-
+        -t(X.scaled.mat) %*% (y.vec / (1 + exp(
+          y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta)
+        ))) +  2 * penalty * opt.W.vec
+      beta.gradient <-
+        -sum(y.vec / (1 + exp(
+          y.vec * (X.scaled.mat %*% opt.W.vec + rep(1, n.trains) * opt.beta)
+        )))
       
       opt.W.vec <- opt.W.vec - step.size * W.gradient.vec
       opt.beta <- opt.beta - step.size * beta.gradient
       
-      # opt.weight.vec <- opt.weight.vec - step.size * cost.gradient.vec # Is this L1 norm gradient? 
+      # opt.weight.vec <- opt.weight.vec - step.size * cost.gradient.vec # Is this L1 norm gradient?
     }
     
     # # Iteration # L1 norm?
