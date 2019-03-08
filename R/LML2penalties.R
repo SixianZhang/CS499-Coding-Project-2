@@ -32,14 +32,12 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
   n.feature <- ncol(X.mat)
     
   # Scaling
-  # feature.mean.vec <- colMeans(X.mat)
-  # feature.std.vec <- sqrt(rowSums((t(X.mat) - feature.mean.vec)^2) / n.train)
-  # feature.std.mat <- diag(1/feature.std.vec)
-  # 
-  # X.scaled.mat <- t((t(X.mat) - feature.mean.vec)/feature.std.vec)
-  
-  X.scaled.mat <- X.mat
-  
+  feature.mean.vec <- colMeans(X.mat)
+  feature.std.vec <- sqrt(rowSums((t(X.mat) - feature.mean.vec)^2) / n.train)
+  feature.std.mat <- diag(1/feature.std.vec)
+
+  X.scaled.mat <- t((t(X.mat) - feature.mean.vec)/feature.std.vec)
+
   # Initializing
   W.mat <- matrix(0, nrow = n.feature + 1, ncol = length(penalty.vec))
   opt.weight.vec <- W.mat[,1]
@@ -51,9 +49,9 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
     W.mat[, i.penalty] <- opt.weight.vec
   }
   
-  # intercept.vec <- -feature.mean.vec %*% feature.std.mat%*%W.mat + W.mat[1,]
-  # W.mat <- rbind(intercept.vec, feature.mean.mat %*% W.mat[-1,])
-  
+  intercept.vec <- -feature.mean.vec %*% feature.std.mat%*%W.mat[-1,] + W.mat[1,]
+  W.mat <- rbind(intercept.vec, feature.std.mat %*% W.mat[-1,])
+
   
   return(W.mat)
 }

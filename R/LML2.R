@@ -48,9 +48,9 @@ LMSquareLossL2 <-
     opt.weight.vec <- initial.weight.vec[-1]
     opt.beta <- initial.weight.vec[1]
     
-    W.gradient.vec <- 2 * t(X.scaled.mat) %*% (X.scaled.mat %*% opt.weight.vec  + rep(opt.beta, n.train) - y.vec) + 2 * penalty * opt.weight.vec
+    W.gradient.vec <- 2 * t(X.scaled.mat) %*% (X.scaled.mat %*% opt.weight.vec  + rep(opt.beta, n.train) - y.vec)/n.train + 2 * penalty * opt.weight.vec
     
-    beta.gradient <- 2 * sum(X.scaled.mat %*% opt.weight.vec + rep(opt.beta, n.train) - y.vec)
+    beta.gradient <- 2 * sum(X.scaled.mat %*% opt.weight.vec + rep(opt.beta, n.train) - y.vec)/n.train
     
     # Compute the gradient
     while (sum(abs(W.gradient.vec)) > opt.thresh) {
@@ -58,9 +58,9 @@ LMSquareLossL2 <-
       
       opt.beta <- opt.beta - step.size * beta.gradient
       
-      W.gradient.vec <- 2 * t(X.scaled.mat) %*% (X.scaled.mat %*% opt.weight.vec  + rep(opt.beta, n.train) - y.vec) + 2 * penalty * opt.weight.vec
+      W.gradient.vec <- 2 * t(X.scaled.mat) %*% (X.scaled.mat %*% opt.weight.vec  + rep(opt.beta, n.train) - y.vec)/n.train + 2 * penalty * opt.weight.vec
       
-      beta.gradient <- 2 * sum(X.scaled.mat %*% opt.weight.vec + rep(opt.beta, n.train) - y.vec)
+      beta.gradient <- 2 * sum(X.scaled.mat %*% opt.weight.vec + rep(opt.beta, n.train) - y.vec)/n.train
       
     }
     opt.weight.vec <- c(opt.beta, opt.weight.vec)
