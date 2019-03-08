@@ -1,5 +1,4 @@
 # This is a test script for general data
-
 # library(LinearModel)
 
 data(spam, package = "ElemStatLearn")
@@ -27,6 +26,7 @@ data.list <- list(
     labels = zip.train[, 1],
     is.01 = TRUE
   ),
+
 
   prostate = list(features = as.matrix(prostate[, 1:8]),
                   labels = prostate$lpsa,
