@@ -99,7 +99,7 @@ LMLogisticLossL2 <-
     if (!all(is.numeric(y.vec),
              is.vector(y.vec),
              length(y.vec) == nrow(X.scaled.mat))) {
-      stop("y.vec must be a numeric vector of lenght nrow(X.scaled.mat")
+      stop("y.vec must be a numeric vector of lenght nrow(X.scaled.mat).")
     }
     
     if (!all(is.numeric(penalty), length(penalty) == 1, penalty >= 0)) {

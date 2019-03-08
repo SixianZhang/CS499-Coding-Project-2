@@ -1,4 +1,4 @@
-# This is a test script for binary data
+# This is a test script for general data
 
 # library(LinearModel)
 
@@ -10,17 +10,17 @@ data(prostate, package = "ElemStatLearn")
 data(ozone, package = "ElemStatLearn")
 
 data.list <- list(
-  # spam = list(
-  #   features = as.matrix(spam[, 1:57]),
-  #   labels = ifelse(spam$spam == "spam", 1, 0),
-  #   is.01 = TRUE
-  # ),
-  # 
-  # SAheart = list(
-  #   features = as.matrix(SAheart[, c(1:4,6:9)]),
-  #   labels = SAheart$chd,
-  #   is.01 = TRUE
-  # ),
+  spam = list(
+    features = as.matrix(spam[, 1:57]),
+    labels = ifelse(spam$spam == "spam", 1, 0),
+    is.01 = TRUE
+  ),
+
+  SAheart = list(
+    features = as.matrix(SAheart[, c(1:4,6:9)]),
+    labels = SAheart$chd,
+    is.01 = TRUE
+  ),
 
   zip.train = list(
     features = as.matrix(zip.train[, -1]),
@@ -97,13 +97,23 @@ for (data.name in names(data.list)) {
   test.loss.mat
   
   # plot result
-  barplot(
-    test.loss.mat,
-    main = c("Binary Classification: ", data.name),
-    xlab = "mean loss value",
-    legend = (rownames(test.loss.mat)),
-    beside = TRUE
-  )
+  if(!data.set$is.01){
+    barplot(
+      test.loss.mat,
+      main = c("Square Regression: ", data.name),
+      xlab = "mean loss value",
+      legend = (rownames(test.loss.mat)),
+      beside = TRUE
+    )
+  }else{
+    barplot(
+      test.loss.mat,
+      main = c("Binary Classification: ", data.name),
+      xlab = "mean loss value",
+      legend = (rownames(test.loss.mat)),
+      beside = TRUE
+    )
+  }
   
   # Run CV for whole dataset
   if(data.set$is.01){

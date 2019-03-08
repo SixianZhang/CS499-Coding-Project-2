@@ -1,18 +1,26 @@
 library(testthat)
 library(LinearModel)
 data(prostate, package = "ElemStatLearn")
-X.scaled.mat <- data.matrix(subset(prostate, select = -c(train, lpsa)))
+X.mat <- data.matrix(subset(prostate, select = -c(train, lpsa)))
+num.train <- dim(X.mat)[1]
+num.feature <- dim(X.mat)[2]
+X.mean.vec <- colMeans(X.mat)
+X.std.vec <-
+  sqrt(rowSums((t(X.mat) - X.mean.vec) ^ 2) / num.train)
+X.std.mat <- diag(num.feature) * (1 / X.std.vec)
+
+X.scaled.mat <- t((t(X.mat) - X.mean.vec) / X.std.vec)
 y.vec <- as.vector(data.matrix(subset(prostate, select = lpsa)))
-penalty <- 2L
-opt.thresh <- 0.5L
-initial.weight.vec <- as.vector(data.matrix(subset(prostate, select = lpsa)))
+penalty <- 5
+opt.thresh <- 0.5
+initial.weight.vec <- c(rep(0, dim(X.scaled.mat)[2] + 1))
 #LMSquareLossL2 X.scaled.mat, y.vec, penalty, opt.thresh = 0.5, initial.weight.vec
 
 test_that(
   "For valid inputs, your function returns an output of the expected type/dimension",
   {
     optimal.weight <-
-      LMSquareLossL2(X.scaled.mat, y.vec, penalty, opt.thresh, initial.weight.vec)
+      LMSquareLossL2(X.scaled.mat, y.vec, penalty, opt.thresh, initial.weight.vec, 0.01)
     expect_true(is.vector(optimal.weight))
   }
 )

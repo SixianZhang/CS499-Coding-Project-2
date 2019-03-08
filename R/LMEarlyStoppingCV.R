@@ -149,7 +149,7 @@ LMLogisticLossEarlyStoppingCV <-
       length(max.iteration) == 1,
       max.iteration > 1
     )) {
-      stop("max.iteration must be an integer scalar greater than zero")
+      stop("max.iteration must be an integer scalar greater than 1")
     }
     
     if (!all(is.numeric(step.size), length(step.size) == 1, step.size > 0)) {

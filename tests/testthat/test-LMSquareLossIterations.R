@@ -41,7 +41,7 @@ test_that(
     )
     expect_error(
       W.mat <-
-        LMSquareLossIterations(X.mat, y.vec, max.iteration, as.double(step.size)),
+        LMSquareLossIterations(X.mat, y.vec, max.iteration, c(rep(step.size,2))),
       "step.size must be a numeric scalar value.",
       fixed = TRUE
     )
