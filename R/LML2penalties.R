@@ -59,7 +59,10 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
     slope.mat[, index] <- optimal.weight.vec
   }
   
-  W.mat <- slope.mat
+  unscaled.slope.mat <- X.std.mat %*% slope.mat[-1,]
+  unscaled.intercept.vec <- -X.mean.vec %*% X.std.mat %*% slope.mat[-1,] + t(slope.mat[1,])
+  
+  W.mat <- rbind(unscaled.intercept.vec, unscaled.slope.mat)
   return(W.mat)
 }
 

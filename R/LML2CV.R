@@ -79,7 +79,7 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     penalty.vec[which.min(mean.validation.loss.vec)]
   W.mat <-
     LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index], penalty.vec)
-  weight.vec <- W.mat[, selected.penalty]
+  weight.vec <- W.mat[, which(penalty.vec == selected.penalty)]
   
   predict <- function(testX.mat) {
     if (!all(is.numeric(testX.mat),
