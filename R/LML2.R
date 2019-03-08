@@ -47,12 +47,12 @@ LMSquareLossL2 <-
     # Compute the gradient
     while (TRUE) {
       grad.cost.func.slope <- 2 * t(X.scaled.mat) %*%
-        (X.scaled.mat %*% weight.vec + rep(1, dim(X.scaled.mat)[1])
-         * intercept.scalar - y.vec) + 2 * penalty * weight.vec
+        (X.scaled.mat %*% weight.vec + c(rep(intercept.scalar, dim(X.scaled.mat)[1]))
+         - y.vec) / dim(X.scaled.mat)[1] + 2 * penalty * weight.vec
       
 
       grad.cost.func.intercept <- 2 * t(c(rep(1, dim(X.scaled.mat)[1]))) %*% 
-        (c(rep(1, dim(X.scaled.mat)[1])) * intercept.scalar + X.scaled.mat %*% weight.vec - y.vec)
+        (c(rep(intercept.scalar, dim(X.scaled.mat)[1])) + X.scaled.mat %*% weight.vec - y.vec) / dim(X.scaled.mat)[1]
       
       if (sum(abs(grad.cost.func.slope)) <= opt.thresh) {
         break

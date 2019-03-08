@@ -96,7 +96,7 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     penalty.vec = penalty.vec,
     selected.penalty = selected.penalty,
     weight.vec = weight.vec,
-    predict
+    predict = predict
   )
   
   return(result.list)

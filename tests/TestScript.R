@@ -10,7 +10,6 @@ data(prostate, package = "ElemStatLearn")
 data(ozone, package = "ElemStatLearn")
 
 data.list <- list(
-<<<<<<< HEAD
   # spam = list(
   #   features = as.matrix(spam[, 1:57]),
   #   labels = ifelse(spam$spam == "spam", 1, 0),

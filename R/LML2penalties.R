@@ -45,10 +45,10 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
   X.scaled.mat <- t((t(X.mat) - X.mean.vec) / X.std.vec)
   
   slope.mat <- matrix(c(
-    rep(0, (num.feature + 1) * length(penalty.vec)),
+    rep(0, (num.feature + 1) * length(penalty.vec))),
     num.feature + 1,
     length(penalty.vec)
-  ))
+  )
   
   optimal.weight.vec <- c(rep(0, (num.feature + 1)))
   for (index in seq(length(penalty.vec))) {
