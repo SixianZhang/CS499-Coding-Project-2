@@ -107,7 +107,7 @@ LMLogisticLossIterations <-
   function(X.mat, y.vec, max.iterations, step.size) {
     # Check type and dimension
     if (!all(is.numeric(X.mat), is.matrix(X.mat))) {
-      stop("X.mat must be a numeric matrix")zwiuytrew                               
+      stop("X.mat must be a numeric matrix")                            
     }
     
     if (!all(is.numeric(y.vec),
