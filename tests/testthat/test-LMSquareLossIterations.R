@@ -4,7 +4,7 @@ data(prostate, package = "ElemStatLearn")
 X.mat <- data.matrix(subset(prostate, select = -c(train, lpsa)))
 y.vec <- as.vector(data.matrix(subset(prostate, select = lpsa)))
 max.iteration <- 5L
-step.size <- 0.5L
+step.size <- 0.5
 # LMLogisticLossIterations X.mat, y.vec, max.iterations, step.size = 0.5
 
 test_that(
