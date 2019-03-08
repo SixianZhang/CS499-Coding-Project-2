@@ -3,7 +3,7 @@ library(LinearModel)
 data(prostate, package = "ElemStatLearn")
 X.mat <- data.matrix(subset(prostate, select = -c(train, lpsa)))
 y.vec <- as.vector(data.matrix(subset(prostate, select = lpsa)))
-fold.vec <- as.vector(data.matrix(subset(prostate, select =  lpsa)))
+fold.vec <- sample(rep(1:5,l=length(y.vec)))
 max.iteration <- 5L
 # LMSquareLossEarlyStoppingCV X.mat, y.vec, fold.vec, max.iteration
 
@@ -12,7 +12,7 @@ test_that(
   {
     result.list <-
       LMSquareLossEarlyStoppingCV(X.mat, y.vec, fold.vec, max.iteration)
-    expect_true(is.list(pred.list))
+    expect_true(is.list(result.list))
   }
 )
 
@@ -34,13 +34,13 @@ test_that(
     expect_error(
       result.list <-
         LMSquareLossEarlyStoppingCV(X.mat, y.vec, fold.vec[-1], max.iteration),
-      "fold.vec must be assigned before input and it must be a integer vector",
+      "fold.vec must be a numeric vector of length nrow(X.mat)",
       fixed = TRUE
     )
     expect_error(
       result.list <-
         LMSquareLossEarlyStoppingCV(X.mat, y.vec, fold.vec, as.double(max.iteration)),
-      "Input max.iterations must be a greater than 1 integer scalar number.",
+      "Input max.iteration must be a greater than 1 integer scalar number.",
       fixed = TRUE
     )
   }

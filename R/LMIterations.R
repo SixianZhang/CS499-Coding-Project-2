@@ -116,17 +116,17 @@ LMLogisticLossIterations <-
       stop("y.vec must be a numeric vector of length nrow(X.mat)")
     }
     
-    # if (!all(
-    #   is.numeric(max.iterations),
-    #   is.integer(max.iterations),
-    #   length(max.iterations) == 1,
-    #   max.iterations >= 1
-    # )) {
-    #   stop("max.iterations must be an integer scalar greater than one")
-    # }
+    if (!all(
+      is.numeric(max.iterations),
+      is.integer(max.iterations),
+      length(max.iterations) == 1,
+      max.iterations >= 1
+    )) {
+      stop("max.iterations must be an integer scalar greater than one")
+    }
     
     if (!all(is.numeric(step.size), length(step.size) == 1, step.size > 0)) {
-      stop("step.size must be a positive scalar")
+      stop("step.size must be a numeric scalar value.")
     }
     
     # # remove the 1 vector if that is the case

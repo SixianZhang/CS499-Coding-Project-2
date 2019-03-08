@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 
 #library(LinearModel)
+=======
+# This is a test script for general data
+# library(LinearModel)
+>>>>>>> 7de4fcd0e70c242df5e6721f4e0e85df376ca590
 
 data(spam, package = "ElemStatLearn")
 data(SAheart, package = "ElemStatLearn")
@@ -97,13 +102,23 @@ for (data.name in names(data.list)) {
   test.loss.mat
   
   # plot result
-  barplot(
-    test.loss.mat,
-    main = c("Binary Classification: ", data.name),
-    xlab = "mean loss value",
-    legend = (rownames(test.loss.mat)),
-    beside = TRUE
-  )
+  if(!data.set$is.01){
+    barplot(
+      test.loss.mat,
+      main = c("Square Regression: ", data.name),
+      xlab = "mean loss value",
+      legend = (rownames(test.loss.mat)),
+      beside = TRUE
+    )
+  }else{
+    barplot(
+      test.loss.mat,
+      main = c("Binary Classification: ", data.name),
+      xlab = "mean loss value",
+      legend = (rownames(test.loss.mat)),
+      beside = TRUE
+    )
+  }
   
   # Run CV for whole dataset
   if(data.set$is.01){

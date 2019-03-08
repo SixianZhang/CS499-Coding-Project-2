@@ -1,18 +1,18 @@
 library(testthat)
 library(LinearModel)
-data(prostate, package = "ElemStatLearn")
-X.scaled.mat <- data.matrix(subset(prostate, select = -c(train, lpsa)))
-y.vec <- as.vector(data.matrix(subset(prostate, select = lpsa)))
-penalty <- 2L
-opt.thresh <- 0.5L
-initial.weight.vec <- as.vector(data.matrix(subset(prostate, select = lpsa)))
+data(spam, package = "ElemStatLearn")
+X.mat <- data.matrix(spam[,-ncol(spam)])
+y.vec <- as.vector(ifelse(spam$spam == 'spam',1,0))
+penalty <- 0.8
+opt.thresh <- 0.5
+initial.weight.vec <- c(rep(0,dim(X.mat)[2] + 1))
 #LMLogisticLossL2 X.scaled.mat, y.vec, penalty, opt.thresh = 0.5, initial.weight.vec
 
 test_that(
   "For valid inputs, your function returns an output of the expected type/dimension",
   {
     opt.weight.vec <-
-      LMLogisticLossL2(X.scaled.mat, y.vec, penalty, opt.thresh, initial.weight.vec)
+      LMLogisticLossL2(X.mat, y.vec, penalty, opt.thresh, initial.weight.vec)
     expect_true(is.vector(opt.weight.vec))
   }
 )
@@ -22,32 +22,32 @@ test_that(
   {
     expect_error(
       opt.weight.vec <- 
-        LMLogisticLossL2(as.data.frame(X.scaled.mat), y.vec, penalty, opt.thresh, initial.weight.vec),
-      "X.mat must be a numeric matrix.",
+        LMLogisticLossL2(as.data.frame(X.mat), y.vec, penalty, opt.thresh, initial.weight.vec),
+      "X.scaled.mat must be a numeric matrix",
       fixed = TRUE
     )
     expect_error(
       opt.weight.vec <-
-        LMLogisticLossL2(X.scaled.mat, y.vec[-1], penalty, opt.thresh, initial.weight.vec),
-      "y.vec must be a numeric vector of the same number of rows as X.mat.",
+        LMLogisticLossL2(X.mat, y.vec[-1], penalty, opt.thresh, initial.weight.vec),
+      "y.vec must be a numeric vector of lenght nrow(X.scaled.mat).",
       fixed = TRUE
     )
     expect_error(
       opt.weight.vec <-
-        LMLogisticLossL2(X.scaled.mat, y.vec, as.double(penalty), opt.thresh, initial.weight.vec),
-      "penalty must be a non-negative numeric scalar.",
+        LMLogisticLossL2(X.mat, y.vec, c(rep(penalty,2)), opt.thresh, initial.weight.vec),
+      "penalty must be a non-negative numeric scalar",
       fixed = TRUE
     )    
     expect_error(
       opt.weight.vec <-
-        LMLogisticLossL2(X.scaled.mat, y.vec, penalty, as.double(opt.thresh), initial.weight.vec),
-      "opt.thresh must be a positive numeric scalar.",
+        LMLogisticLossL2(X.mat, y.vec, penalty, c(rep(opt.thresh,2)), initial.weight.vec),
+      "opt.thresh must be a positive numeric scalar",
       fixed = TRUE
     )    
     expect_error(
       opt.weight.vec <-
-        LMLogisticLossL2(X.scaled.mat, y.vec, penalty, opt.thresh, initial.weight.vec[-1]),
-      "initial.weight.vec must be a numeric vector.",
+        LMLogisticLossL2(X.mat, y.vec, penalty, opt.thresh, initial.weight.vec[-1]),
+      "initial.weight.vec must be a numeric vector of length ncol(X.scaled.mat) + 1",
       fixed = TRUE
     )
   }
