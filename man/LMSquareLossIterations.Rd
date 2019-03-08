@@ -16,7 +16,8 @@ LMSquareLossIterations(X.mat, y.vec, max.iterations, step.size = 0.5)
 \item{step.size}{integer scalar}
 }
 \value{
-W.mat matrix of weight vectors of size [n x max.iterations]
+W.mat matrix of weight vectors of size [(p + 1) x max.iterations].
+A prediction can be obtained by cbind(1,X.mat) %*% W.mat.
 }
 \description{
 Linear model iteration with square loss

@@ -4,7 +4,7 @@ data(prostate, package = "ElemStatLearn")
 X.mat <- data.matrix(subset(prostate, select = -c(train, lpsa)))
 y.vec <- as.vector(data.matrix(subset(prostate, select = lpsa)))
 max.iteration <- 5L
-step.size <- 0.5L
+step.size <- 0.5
 # LMLogisticLossIterations X.mat, y.vec, max.iterations, step.size = 0.5
 
 test_that(
@@ -14,7 +14,7 @@ test_that(
       LMSquareLossIterations(X.mat, y.vec, max.iteration, step.size)
     expect_true(is.numeric(W.mat))
     expect_true(is.matrix(W.mat))
-    expect_equal(nrow(W.mat), ncol(X.mat))
+    expect_equal(nrow(W.mat), ncol(cbind(1, X.mat)))
   }
 )
 

@@ -4,7 +4,7 @@
 \alias{LMLogisticLossL2penalties}
 \title{Linear model with L2 penalties and logistic loss}
 \usage{
-LMLogisticLossL2penalties(X.mat, y.vec, penalty.vec)
+LMLogisticLossL2penalties(X.mat, y.vec, penalty.vec, opt.thresh = 0.5)
 }
 \arguments{
 \item{X.mat}{a numeric matrix of size [n x p]}

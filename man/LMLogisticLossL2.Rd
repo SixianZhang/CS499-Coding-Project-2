@@ -2,10 +2,10 @@
 % Please edit documentation in R/LML2.R
 \name{LMLogisticLossL2}
 \alias{LMLogisticLossL2}
-\title{Linear model L2 regularization with logistic loss}
+\title{Linear model L2 regularization with logistic loss, including beta during the training}
 \usage{
 LMLogisticLossL2(X.scaled.mat, y.vec, penalty, opt.thresh,
-  initial.weight.vec)
+  initial.weight.vec, step.size = 0.01, max.iteration = 10)
 }
 \arguments{
 \item{X.scaled.mat}{a numeric matrix of size [n x p]}
@@ -17,10 +17,14 @@ LMLogisticLossL2(X.scaled.mat, y.vec, penalty, opt.thresh,
 \item{opt.thresh}{a positive numeric scalar}
 
 \item{initial.weight.vec}{a numeric vector of size ncol(X.scaled.mat)}
+
+\item{step.size}{a numeric scalar greater than zero}
+
+\item{max.iteration}{a integer scalar greater than one}
 }
 \value{
 opt.weight the optimal weight vector of length ncol(X.scaled)
 }
 \description{
-Linear model L2 regularization with logistic loss
+Linear model L2 regularization with logistic loss, including beta during the training
 }

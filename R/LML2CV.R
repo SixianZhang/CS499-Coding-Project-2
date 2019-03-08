@@ -21,9 +21,14 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     stop("y.vec must be a numeric vector of the same number of rows as X.mat.")
   }
   
-  if (!all(is.integer(fold.vec), is.vector(fold.vec))) {
-    stop("fold.vec must be assigned before input and it must be a integer vector")
-  }
+  if (is.null(fold.vec)) {
+    fold.vec <- sample(rep(1:5, l = nrow(X.mat)))
+  } else
+    if (!all(is.numeric(fold.vec),
+             is.vector(fold.vec),
+             length(fold.vec) == nrow(X.mat))) {
+      stop("fold.vec must be a numeric vector of length nrow(X.mat)")
+    }
   
   if (!all(
     is.vector(penalty.vec),
@@ -50,15 +55,15 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     
     #Calculate train.loss
     W.mat <-
-      LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index, ], penalty.vec)
+      LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index], penalty.vec)
     
-    train.predit <- X.mat[train.index, ] %*% W.mat
-    train.loss <- (train.predit - y.vec[train.index, ]) ^ 2
+    train.predit <- cbind(1, X.mat[train.index, ]) %*% W.mat
+    train.loss <- (train.predit - y.vec[train.index]) ^ 2
     
     #Calculate validation.loss
-    validation.predict <- X.mat[validation.index, ] %*% W.mat
+    validation.predict <- cbind(1,X.mat[validation.index, ]) %*% W.mat
     validation.loss <-
-      (validation.predict - y.vec[validation.index, ]) ^ 2
+      (validation.predict - y.vec[validation.index]) ^ 2
     
     mean.train.loss.vec <- colMeans(train.loss)
     mean.validation.loss.vec <- colMeans(validation.loss)
@@ -73,16 +78,16 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
   selected.penalty <-
     penalty.vec[which.min(mean.validation.loss.vec)]
   W.mat <-
-    LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index, ], penalty.vec)
-  weight.vec <- W.mat[, selected.penalty]
-  
+    LMSquareLossL2penalties(X.mat[train.index, ], y.vec[train.index], penalty.vec)
+  weight.vec <- W.mat[, which(penalty.vec == selected.penalty)]
+    
   predict <- function(testX.mat) {
     if (!all(is.numeric(testX.mat),
              is.matrix(testX.mat),
              ncol(testX.mat) == ncol(X.mat))) {
       stop("testX.mat must be a numeric matrix with ncol(X.mat) columns")
     }
-    prediction.vec <- testX.mat %*% weight.vec
+    prediction.vec <- cbind(1, testX.mat) %*% weight.vec
   }
   
   result.list <- list(
@@ -91,7 +96,7 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     penalty.vec = penalty.vec,
     selected.penalty = selected.penalty,
     weight.vec = weight.vec,
-    predict
+    predict = predict
   )
   
   return(result.list)
@@ -123,11 +128,14 @@ LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     stop("y.vec must be a numeric vector of length nrow(X.mat)")
   }
   
-  if (!all(is.numeric(fold.vec),
-           is.vector(fold.vec),
-           length(fold.vec) == nrow(X.mat))) {
-    stop("fold.vec must be a numeric vector of length nrow(X.mat)")
-  }
+  if (is.null(fold.vec)) {
+    fold.vec <- sample(rep(1:5, l = nrow(X.mat)))
+  } else
+    if (!all(is.numeric(fold.vec),
+             is.vector(fold.vec),
+             length(fold.vec) == nrow(X.mat))) {
+      stop("fold.vec must be a numeric vector of length nrow(X.mat)")
+    }
   
   if (!all(is.numeric(penalty.vec),
            is.vector(penalty.vec),
@@ -135,13 +143,18 @@ LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     stop("penallty.vec must be a non-negative numeric vector")
   }
   
+  # If y contains 0 and 1 then match to -1, 1
+  if (all(y.vec %in% c(0, 1))) {
+    y.vec <- 2 * (y.vec - 0.5) # Maybe a better way?
+  }
+  
   # Initiallize
   n.features <- ncol(X.mat)
   n.folds <- length(unique(fold.vec))
   train.loss.mat <-
-    matrix(0, nrow = n.folds, ncol = max.iteration)
+    matrix(0, nrow = n.folds, ncol = length(penalty.vec))
   validation.loss.mat <-
-    matrix(0, nrow = n.folds, ncol = max.iteration)
+    matrix(0, nrow = n.folds, ncol = length(penalty.vec))
   
   # Iterating folds
   for (fold.index in (1:n.folds)) {
@@ -155,15 +168,19 @@ LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
         validation.index <- which(fold.vec == fold.index)
       }
       
-      W.mat <-
+      W.mat <- # (p+1) * i
         LMLogisticLossL2penalties(X.mat[train.index,], y.vec[train.index], penalty.vec) # Do we need to expose step.size?
       
+      prediction.vec <-
+        ifelse(cbind(1, X.mat)[validation.index, ] %*% W.mat > 0.5, 1,-1)
+      
       if (validation.set == "train") {
+
         train.loss.mat[fold.index, ] <-
-          colMeans(X.mat[validation.index,] %*% W.mat - y.vec[validation.index])
+          colMeans(prediction.vec != y.vec[validation.index])
       } else{
         validation.loss.mat[fold.index, ] <-
-          colMeans(X.mat[validation.index,] %*% W.mat - y.vec[validation.index])
+          colMeans(prediction.vec != y.vec[validation.index])
       }
     }
   }
@@ -171,19 +188,21 @@ LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
   mean.validation.loss.vec <- colMeans(validation.loss.mat)
   selected.penalty.index <- which.min(mean.validation.loss.vec)
   
-  weight.vec <-
+  weight.vec <- # (p + 1) length
     LMLogisticLossL2penalties(X.mat, y.vec, penalty.vec)[, selected.penalty.index]
   
   predict <- function(testX.mat) {
     # Check type and dimension
     if (!all(is.numeric(testX.mat),
-             is.matrix(test.mat),
-             ncol(test.mat) == n.features)) {
+             is.matrix(testX.mat),
+             ncol(testX.mat) == n.features)) {
       stop("testX.mat must be a numeric matrix with n.features columns")
     }
     
-    prediction.vec <- testX.mat %*% t(weight.vec)
-    return(prediction)
+    # prediction.vec <- ifelse(cbind(1,testX.mat) %*% t(weight.vec) > 0.5, 1, -1)
+    prediction.vec <- cbind(1,testX.mat) %*% weight.vec
+        
+    return(prediction.vec)
   }
   
   result.list <- list(

@@ -11,7 +11,7 @@ LMSquareLossEarlyStoppingCV(X.mat, y.vec, fold.vec, max.iteration)
 
 \item{y.vec}{train label vector of size [n x 1]}
 
-\item{max.iterations}{integer scalar greater than 1}
+\item{max.iteration}{integer scalar greater than 1}
 }
 \value{
 result.list a list with mean.validation.loss.vec,

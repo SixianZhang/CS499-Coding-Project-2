@@ -4,7 +4,8 @@
 \alias{LMLogisticLossEarlyStoppingCV}
 \title{Cross validation algorithm using linear model with logistic loss}
 \usage{
-LMLogisticLossEarlyStoppingCV(X.mat, y.vec, fold.vec, max.iteration)
+LMLogisticLossEarlyStoppingCV(X.mat, y.vec, fold.vec = NULL,
+  max.iteration, step.size = 0.5)
 }
 \arguments{
 \item{X.mat}{train feature matrix of size [n x p]}
@@ -13,7 +14,9 @@ LMLogisticLossEarlyStoppingCV(X.mat, y.vec, fold.vec, max.iteration)
 
 \item{fold.vec}{fold index vector of size [n x 1]}
 
-\item{max.iterations}{integer scalar greater than 1}
+\item{max.iteration}{integer scalar greater than 1}
+
+\item{step.size}{a numeric scaler greater than 0, default is 0.5}
 }
 \value{
 result.list a list with mean.validation.loss.vec,

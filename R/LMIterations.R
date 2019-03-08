@@ -5,7 +5,7 @@
 #' @param max.iterations integer scalar greater than 1
 #' @param step.size integer scalar
 #'
-#' @return W.mat matrix of weight vectors of size [(p + 1) x max.iterations]. 
+#' @return W.mat matrix of weight vectors of size [(p + 1) x max.iterations].
 #' A prediction can be obtained by cbind(1,X.mat) %*% W.mat.
 #' @export
 #'
@@ -31,8 +31,7 @@ LMSquareLossIterations <-
     if (!all(is.numeric(step.size), length(step.size) == 1)) {
       stop("step.size must be a numeric scalar value.")
     }
-    
-    X.mat <- X.mat[, -1]
+  
     #Obatin X.scaled.mat from the orginal X.mat, to make sure std = 1, u = 0
     num.train <- dim(X.mat)[1]
     num.feature <- dim(X.mat)[2]
@@ -40,36 +39,54 @@ LMSquareLossIterations <-
     X.mean.vec <- colMeans(X.mat)
     
     X.std.vec <-
-      sqrt(rowSums((t(X.mat) - X.mean.mat) ^ 2) / num.train)
+      sqrt(rowSums((t(X.mat) - X.mean.vec) ^ 2) / num.train)
     X.std.mat <- diag(num.feature) * (1 / X.std.vec)
     
     X.scaled.mat <- t((t(X.mat) - X.mean.vec) / X.std.vec)
     slope.mat <-
       matrix(c(
-        rep(0, num.feature * max.iterations),
+        rep(0, num.feature * max.iterations)),
         num.feature,
         max.iterations
-      ))
+      )
+    
+    intercept.vec <- c(rep(0, max.iterations))
     
     # for-loop to get the slope.mat matrix
     for (iter.index in (1:max.iterations)) {
       if (iter.index == 1) {
-        mean.loss.temp.vec <- (2 * t(X.scaled.mat) %*%
-                                 (X.scaled.mat %*% slope.mat[, 1] - y.vec)) / num.train
-        slope.vec.temp <-
-          slope.mat[, 1] - step.size * mean.loss.temp.vec
+        mean.loss.slope.vec <- (2 * t(X.scaled.mat) %*%
+                                 (X.scaled.mat %*% slope.mat[, 1] +
+                                    c(rep(1, num.train)) * intercept.vec[1] - y.vec)) / num.train
+        
+        mean.loss.intercept <- 2 * t(c(rep(1, num.train))) %*% (X.scaled.mat %*% slope.mat[, 1]
+                                        + c(rep(1, num.train)) * intercept.vec[1] - y.vec) / num.train
+        slope.vec.temp <- 
+          slope.mat[, 1] - step.size * mean.loss.slope.vec
+        
+        intercept.vec.temp <- intercept.vec[1] - step.size * mean.loss.intercept
+        
       } else{
-        mean.loss.temp.vec <- (2 * t(X.scaled.mat) %*%
-                                 (X.scaled.mat %*% slope.mat[, iter.index - 1] - y.vec)) / num.train
+        mean.loss.slope.vec <- (2 * t(X.scaled.mat) %*%
+                                 (X.scaled.mat %*% slope.mat[, iter.index - 1] +
+                                    c(rep(1, num.train)) * intercept.vec[iter.index - 1] - y.vec)) / num.train
+        
+        mean.loss.intercept <- 2 * t(c(rep(1, num.train))) %*% (X.scaled.mat %*% slope.mat[, iter.index - 1]
+                                                                      + c(rep(1, num.train)) * intercept.vec[iter.index -1] - y.vec) / num.train
+        
         slope.vec.temp <-
-          slope.mat[, iter.index - 1] - step.size * mean.loss.temp.vec
+          slope.mat[, iter.index - 1] - step.size * mean.loss.slope.vec
+        
+        intercept.vec.temp <- intercept.vec[iter.index - 1] - step.size * mean.loss.intercept
       }
       slope.mat[, iter.index] = slope.vec.temp
+      intercept.vec[iter.index] = intercept.vec.temp
       
     }
-    itercept <- -t(slope.mat) %*% X.std.mat %*% X.mean.vec #m x 1
-    slope <- t(slope.mat) %*% X.std.mat  #m x (p-1)
-    W.mat <- rbind(t(itercept), t(slope)) #p x m
+    intercept.part1 <- -X.mean.vec %*% X.std.mat %*% slope.mat  #1 x m
+    intercept <- intercept.part1 + t(intercept.vec)
+    slope <- X.std.mat %*% slope.mat #p x m
+    W.mat <- rbind(intercept, slope) #(p+1) x m
     return(W.mat)
   }
 
@@ -81,7 +98,7 @@ LMSquareLossIterations <-
 #' @param step.size a numeric scalar greater than zero
 #'
 #' @return W.mat matrix of weight vectors of size [(p + 1) x max.iterations]
-#' 
+#'
 
 #' @export
 #'
@@ -90,7 +107,7 @@ LMLogisticLossIterations <-
   function(X.mat, y.vec, max.iterations, step.size) {
     # Check type and dimension
     if (!all(is.numeric(X.mat), is.matrix(X.mat))) {
-      stop("X.mat must be a numeric matrix")
+      stop("X.mat must be a numeric matrix")                            
     }
     
     if (!all(is.numeric(y.vec),
@@ -99,14 +116,14 @@ LMLogisticLossIterations <-
       stop("y.vec must be a numeric vector of length nrow(X.mat)")
     }
     
-    if (!all(
-      is.numeric(max.iterations),
-      is.integer(max.iterations),
-      length(max.iterations) == 1,
-      max.iterations > 1
-    )) {
-      stop("max.iterations must be an integer scalar greater than one")
-    }
+    # if (!all(
+    #   is.numeric(max.iterations),
+    #   is.integer(max.iterations),
+    #   length(max.iterations) == 1,
+    #   max.iterations >= 1
+    # )) {
+    #   stop("max.iterations must be an integer scalar greater than one")
+    # }
     
     if (!all(is.numeric(step.size), length(step.size) == 1, step.size > 0)) {
       stop("step.size must be a positive scalar")
@@ -124,22 +141,26 @@ LMLogisticLossIterations <-
       sqrt(rowSums((t(X.mat) - feature.mean.vec) ^ 2) / n.train) # try to use sd but that gives the sd for the whole matrix
     
     # Check if there is a feature with 0 deviation
-    if(!feature.sd.vec != 0){
-      
-    }
+
+    # column with zero variance will become zero at the end
+    feature.sd.vec[feature.sd.vec == 0] <- 1
     
-    feature.sd.mat <- 1 / diag(feature.sd.vec)
+    feature.sd.mat <- diag(1 / feature.sd.vec)
     
-    X.scaled.mat <- t((t(X.mat) - feature.mean.vec) / feature.sd.vec) # Use scale to simplify.
+
+    
+    X.scaled.mat <-
+      t((t(X.mat) - feature.mean.vec) / feature.sd.vec) # Use scale to simplify.
     
     # Initialize W.mat matrix
     W.mat <- matrix(0, nrow = n.features, ncol = max.iterations)
-    beta.vec <- rep(0,l = max.iterations)
-    W.temp.vec <- W.mat[,0]
-    beta.temp <- 0 
+    beta.vec <- rep(0, l = max.iterations)
+    
+    W.temp.vec <- W.mat[, 1]
+    beta.temp <- 0
     
     # Iteration
-    for (n.interations in (1:max.iterations)) {
+    for (n.iterations in (1:max.iterations)) {
       # Calculate L(w)'
       # This is training without interception
       # loss.gradient.vec <-
@@ -148,26 +169,30 @@ LMLogisticLossIterations <-
       # This is trainging with interception
       # Calculate L(w)'
       W.gradient.vec <-
-        - t(X.scaled.mat) %*% y.vec / (1 + exp(y.vec * (X.scaled.mat %*% W.temp.vec + beta.temp)))
+        -t(X.scaled.mat) %*% (y.vec / (1 + exp(y.vec * (
+          X.scaled.mat %*% W.temp.vec + rep(1,n.train) * beta.temp
+        ))))/ n.train
       # Calculate L(beta)'
-      beta.gradient <- 
-        - sum(y.vec) / (1 + exp(y.vec * (X.scaled.mat %*% W.temp.vec + beta.temp)))
+      beta.gradient <-
+        -sum(y.vec / (1 + exp(y.vec * (
+          X.scaled.mat %*% W.temp.vec + rep(1,n.train) * beta.temp
+        ))))/n.train  
       
       # Take a step
       W.mat[, n.iterations] <-
         W.temp.vec - step.size * W.gradient.vec
-      beta.vec[n.iterations] <- 
+      beta.vec[n.iterations] <-
         beta.temp - step.size * beta.gradient
       
-      W.temp.vec <- W.mat[ ,n.interations]
-      beta.gradient <- beta.vec[n.iterations]
+      W.temp.vec <- W.mat[, n.iterations]
+      beta.temp <- beta.vec[n.iterations]
     }
-    intercept.vec <- 
-
-      -t(feature.mean.vec) %*% feature.sd.mat %*% W.mat
-    W.mat <- rbind(intercept.vec, feature.sd.mat %*% W.mat)
+    
+    # unscaling
+    intercept.vec <-
+      -feature.mean.vec %*% feature.sd.mat %*% W.mat + beta.vec
+    W.mat <- feature.sd.mat %*% W.mat
+    W.mat <- rbind(intercept.vec, W.mat)
     
     return(W.mat)
-    
-    
   }

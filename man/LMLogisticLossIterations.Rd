@@ -13,10 +13,10 @@ LMLogisticLossIterations(X.mat, y.vec, max.iterations, step.size)
 
 \item{max.iterations}{integer scalar greater than 1}
 
-\item{step.size}{integer scalar}
+\item{step.size}{a numeric scalar greater than zero}
 }
 \value{
-W.mat matrix of weight vectors of size [n x max.iterations]
+W.mat matrix of weight vectors of size [(p + 1) x max.iterations]
 }
 \description{
 Linear model iteration with logistic loss
