@@ -27,6 +27,7 @@ data.list <- list(
     is.01 = TRUE
   ),
 
+
   prostate = list(features = as.matrix(prostate[, 1:8]),
                   labels = prostate$lpsa,
                   is.01 = FALSE),
