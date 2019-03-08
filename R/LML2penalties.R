@@ -112,13 +112,17 @@ LMLogisticLossL2penalties <-
     feature.mean.vec <- colMeans(X.mat)
     feature.sd.vec <-
       sqrt(rowSums((t(X.mat) - feature.mean.vec) ^ 2) / n.train)
-    feature.sd.mat <- 1 / diag(feature.sd.vec)
+    
+    # column with zero variance will become zero at the end
+    feature.mean.vec[feature.mean.vec == 0] <- 1
+    
+    feature.sd.mat <- diag(1 / feature.sd.vec)
     
     X.scaled.mat <- t((t(X.mat) - feature.mean.vec) / feature.sd.vec)
     
     initial.weight.vec <- rep(0, n.features + 1)
     
-    W.mat <- matrix(0, nrow = n.features, ncol = n.penalties)
+    W.mat <- matrix(0, nrow = n.features + 1, ncol = n.penalties)
     # W.temp.mat <- W.mat
     
     for (i.penalty in (1:n.penalties)) {
@@ -131,7 +135,7 @@ LMLogisticLossL2penalties <-
       initial.weight.vec <- W.mat[, i.penalty] # is penalty in a decreasing order?
     }
     
-    interception.vec <-   
+    intercept.vec <-   
       feature.mean.vec %*% feature.sd.mat %*% W.mat[-1,] + W.mat[1,] # W.mat is the beta.vec
     W.mat <- rbind(intercept.vec, feature.sd.mat %*% W.mat[-1,])
     

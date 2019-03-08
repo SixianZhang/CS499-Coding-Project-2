@@ -21,9 +21,14 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     stop("y.vec must be a numeric vector of the same number of rows as X.mat.")
   }
   
-  if (!all(is.integer(fold.vec), is.vector(fold.vec))) {
-    stop("fold.vec must be assigned before input and it must be a integer vector")
-  }
+  if (is.null(fold.vec)) {
+    fold.vec <- sample(rep(1:5, l = nrow(X.mat)))
+  } else
+    if (!all(is.numeric(fold.vec),
+             is.vector(fold.vec),
+             length(fold.vec) == nrow(X.mat))) {
+      stop("fold.vec must be a numeric vector of length nrow(X.mat)")
+    }
   
   if (!all(
     is.vector(penalty.vec),
@@ -123,11 +128,14 @@ LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     stop("y.vec must be a numeric vector of length nrow(X.mat)")
   }
   
-  if (!all(is.numeric(fold.vec),
-           is.vector(fold.vec),
-           length(fold.vec) == nrow(X.mat))) {
-    stop("fold.vec must be a numeric vector of length nrow(X.mat)")
-  }
+  if (is.null(fold.vec)) {
+    fold.vec <- sample(rep(1:5, l = nrow(X.mat)))
+  } else
+    if (!all(is.numeric(fold.vec),
+             is.vector(fold.vec),
+             length(fold.vec) == nrow(X.mat))) {
+      stop("fold.vec must be a numeric vector of length nrow(X.mat)")
+    }
   
   if (!all(is.numeric(penalty.vec),
            is.vector(penalty.vec),
@@ -135,13 +143,18 @@ LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
     stop("penallty.vec must be a non-negative numeric vector")
   }
   
+  # If y contains 0 and 1 then match to -1, 1
+  if (all(y.vec %in% c(0, 1))) {
+    y.vec <- 2 * (y.vec - 0.5) # Maybe a better way?
+  }
+  
   # Initiallize
   n.features <- ncol(X.mat)
   n.folds <- length(unique(fold.vec))
   train.loss.mat <-
-    matrix(0, nrow = n.folds, ncol = max.iteration)
+    matrix(0, nrow = n.folds, ncol = length(penalty.vec))
   validation.loss.mat <-
-    matrix(0, nrow = n.folds, ncol = max.iteration)
+    matrix(0, nrow = n.folds, ncol = length(penalty.vec))
   
   # Iterating folds
   for (fold.index in (1:n.folds)) {
@@ -181,13 +194,14 @@ LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
   predict <- function(testX.mat) {
     # Check type and dimension
     if (!all(is.numeric(testX.mat),
-             is.matrix(test.mat),
-             ncol(test.mat) == n.features)) {
+             is.matrix(testX.mat),
+             ncol(testX.mat) == n.features)) {
       stop("testX.mat must be a numeric matrix with n.features columns")
     }
     
-    prediction.vec <- ifelse(cbind(1,testX.mat) %*% t(weight.vec) > 0.5, 1, -1)
-    
+    # prediction.vec <- ifelse(cbind(1,testX.mat) %*% t(weight.vec) > 0.5, 1, -1)
+    prediction.vec <- cbind(1,testX.mat) %*% weight.vec
+        
     return(prediction.vec)
   }
   
