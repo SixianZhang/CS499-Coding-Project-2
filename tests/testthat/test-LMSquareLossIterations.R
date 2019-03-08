@@ -14,7 +14,7 @@ test_that(
       LMSquareLossIterations(X.mat, y.vec, max.iteration, step.size)
     expect_true(is.numeric(W.mat))
     expect_true(is.matrix(W.mat))
-    expect_equal(nrow(W.mat), ncol(X.mat))
+    expect_equal(nrow(W.mat), ncol(cbind(1, X.mat)))
   }
 )
 
