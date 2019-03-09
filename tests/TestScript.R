@@ -1,5 +1,10 @@
+<<<<<<< HEAD
+
+#library(LinearModel)
+=======
 # This is a test script for general data
 # library(LinearModel)
+>>>>>>> 7de4fcd0e70c242df5e6721f4e0e85df376ca590
 
 data(spam, package = "ElemStatLearn")
 data(SAheart, package = "ElemStatLearn")
