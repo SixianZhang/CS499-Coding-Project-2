@@ -20,5 +20,6 @@ W.mat matrix of weight vectors of size [(p + 1) x max.iterations].
 A prediction can be obtained by cbind(1,X.mat) %*% W.mat.
 }
 \description{
-Linear model iteration with square loss
+Training by using gradient descent on a linear model with square loss .
+Return a matrix of weight vector for each iteration to the max iteration.
 }

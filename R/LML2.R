@@ -1,5 +1,9 @@
 #' Linear model L2 regularization with square loss
 #'
+#' Training by using L2 regularization on a linear model with square loss .
+#' Return the optimal weight vector for the given threshold and penalty.
+#'
+#'
 #' @param X.scaled.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric matrix of length nrow(X.scaled.mat)
 #' @param penalty a non-negative numeric scalar
@@ -84,6 +88,9 @@ LMSquareLossL2 <-
 
 #' Linear model L2 regularization with logistic loss, including beta during the training
 #'
+#' Training by using L2 regularization on a linear model with logistic loss .
+#' Return the optimal weight vector for the given threshold and penalty.
+#'
 #' @param X.scaled.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric matrix of length nrow(X.scaled.mat)
 #' @param penalty a non-negative numeric scalar
@@ -96,6 +103,15 @@ LMSquareLossL2 <-
 #' @export
 #'
 #' @examples
+#' 
+#' data(spam, package = "ElemStatLearn")
+#' X.mat <- as.matrix(spam[, 1:57])
+#' X.scaled.mat <- scale(X.mat)
+#' y.vec <- ifelse(spam$spam == "spam", 1, -1)
+#' opt.weight.vec <- LMLogisticLossL2(X.mat, y.vec, 0.5, 0.5, rep(0,ncol(X.scaled.mat), 0.01, 100L))
+#' (opt.weigh.vec)
+
+ 
 LMLogisticLossL2 <-
   function(X.scaled.mat,
            y.vec,

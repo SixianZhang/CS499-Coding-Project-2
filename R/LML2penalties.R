@@ -1,5 +1,8 @@
 #' Linear model with L2 penalties and square loss
 #'
+#' Training by using L2 regularization on a linear model with square loss .
+#' Return a matrix of weight vector for the given penalty vector.
+#'
 #' @param X.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric vector of length nrow(X.mat)
 #' @param penalty.vec a non-negative numeric vector
@@ -75,6 +78,9 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
 
 #' Linear model with L2 penalties and logistic loss
 #'
+#' Training by using L2 regularization on a linear model with logistic loss .
+#' Return a matrix of weight vector for the given penalty vector.
+#'
 #' @param X.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric vector of length nrow(X.mat)
 #' @param penalty.vec a non-negative numeric vector
@@ -83,6 +89,13 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
 #' @export
 #'
 #' @examples
+#' data(spam, package = "ElemStatLearn")
+#' X.mat <- as.matrix(spam[, 1:57])
+#' y.vec <- ifelse(spam$spam == "spam", 1, -1)
+#' penalty.vec <- seq(5:0.1, by = -0.1)
+#' W.mat <- LMLogisticLossL2penalties(X.mat, y.vec, penalty.vec, 0.5)
+#' (W.mat)
+
 LMLogisticLossL2penalties <-
   function(X.mat, y.vec, penalty.vec, opt.thresh = 0.5) {
     # Check type and dimension

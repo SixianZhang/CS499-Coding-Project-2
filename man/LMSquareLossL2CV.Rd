@@ -20,5 +20,7 @@ result.list a list with mean.validation.loss.vec,
 mean.train.loss.vec,penalty.vec,selected.penalty,weight.vec,and predict function
 }
 \description{
-Cross validation using linear model with L2 regularization and square loss
+Training by using cross validation on a linear model with square loss and L2 regularization.
+Return a list which contains the best penalty, mean loss of training and validation data,
+and a predict function which gives a prediction based on the selected penalty.
 }

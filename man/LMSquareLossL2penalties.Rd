@@ -17,5 +17,6 @@ LMSquareLossL2penalties(X.mat, y.vec, penalty.vec)
 W.mat a numeric weight matrix of size [ncol(X.mat) x length(penalty.vec)]
 }
 \description{
-Linear model with L2 penalties and square loss
+Training by using L2 regularization on a linear model with square loss .
+Return a matrix of weight vector for the given penalty vector.
 }

@@ -20,5 +20,15 @@ result.list a list with mean.validation.loss.vec,
 mean.train.loss.vec,penalty.vec,selected.penalty,weight.vec,and predict function
 }
 \description{
-Cross validation using linear model with L2 regularization and logistic loss
+Training by using cross validation on a linear model with logistic loss and L2 regularization.
+Return a list which contains the best penalty, mean loss of training and validation data,
+and a predict function which gives a prediction based on the selected penalty.
+}
+\examples{
+data(spam, package = "ElemStatLearn")
+X.mat <- as.matrix(spam[, 1:57])
+y.vec <- ifelse(spam$spam == "spam", 1, 0)
+penalty.vec <- seq(5:0.1, by = -0.1)
+L2.list <- LMlogistLossL2CV(X.mat, y.vec, NULL, penalty.vec)
+(L2.list$predict(X.mat[1,]))
 }

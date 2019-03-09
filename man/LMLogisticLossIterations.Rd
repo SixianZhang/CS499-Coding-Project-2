@@ -19,5 +19,14 @@ LMLogisticLossIterations(X.mat, y.vec, max.iterations, step.size)
 W.mat matrix of weight vectors of size [(p + 1) x max.iterations]
 }
 \description{
-Linear model iteration with logistic loss
+Training by using gradient descent on a linear model with logistic loss .
+Return a matrix of weight vector for each iteration to the max iteration.
+}
+\examples{
+
+data(spam, package = "ElemStatLearn")
+X.mat <- as.matrix(spam[, 1:57])
+y.vec <- ifelse(spam$spam == "spam", 1, -1)
+W.mat <- LMLogisticLossIterations(X.mat, y.vec, max.iterations = 100L, step.size = 0.5)
+(W.mat)
 }
