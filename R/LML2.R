@@ -1,5 +1,9 @@
 #' Linear model L2 regularization with square loss
 #'
+#' Training by using L2 regularization on a linear model with square loss .
+#' Return the optimal weight vector for the given threshold and penalty.
+#'
+#'
 #' @param X.scaled.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric matrix of length nrow(X.scaled.mat)
 #' @param penalty a non-negative numeric scalar
@@ -71,6 +75,9 @@ LMSquareLossL2 <-
 
 
 #' Linear model L2 regularization with logistic loss, including beta during the training
+#'
+#' Training by using L2 regularization on a linear model with logistic loss .
+#' Return the optimal weight vector for the given threshold and penalty.
 #'
 #' @param X.scaled.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric matrix of length nrow(X.scaled.mat)

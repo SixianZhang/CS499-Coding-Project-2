@@ -11,6 +11,8 @@ LMSquareLossEarlyStoppingCV(X.mat, y.vec, fold.vec, max.iteration)
 
 \item{y.vec}{train label vector of size [n x 1]}
 
+\item{fold.vec}{numeric vector of length n, if it is not given, a fold vector of 5 folds will be used}
+
 \item{max.iteration}{integer scalar greater than 1}
 }
 \value{
@@ -18,5 +20,7 @@ result.list a list with mean.validation.loss.vec,
 mean.train.loss.vec,selected.steps,weight.vec,and predict function
 }
 \description{
-Cross validation algorithm using linear model with square loss
+Training by using cross validation on a linear model with square loss and early stopping method.
+Return a list which contains the best iteration step, mean loss of training and validation data,
+and a predict function which gives a prediction based on the selected step.
 }

@@ -17,7 +17,8 @@ LMLogisticLossL2penalties(X.mat, y.vec, penalty.vec, opt.thresh = 0.5)
 W.mat a numeric weight matrix of size [ncol(X.mat) x length(penalty.vec)]
 }
 \description{
-Linear model with L2 penalties and logistic loss
+Training by using L2 regularization on a linear model with logistic loss .
+Return a matrix of weight vector for the given penalty vector.
 }
 \examples{
 data(spam, package = "ElemStatLearn")

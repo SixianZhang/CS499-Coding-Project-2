@@ -26,7 +26,8 @@ LMLogisticLossL2(X.scaled.mat, y.vec, penalty, opt.thresh,
 opt.weight the optimal weight vector of length ncol(X.scaled)
 }
 \description{
-Linear model L2 regularization with logistic loss, including beta during the training
+Training by using L2 regularization on a linear model with logistic loss .
+Return the optimal weight vector for the given threshold and penalty.
 }
 \examples{
 

@@ -1,5 +1,8 @@
 #' Linear model iteration with square loss
 #'
+#' Training by using gradient descent on a linear model with square loss .
+#' Return a matrix of weight vector for each iteration to the max iteration.
+#'
 #' @param X.mat train feature matrix of size [n x p]
 #' @param y.vec train label vector of size [n x 1]
 #' @param max.iterations integer scalar greater than 1
@@ -92,6 +95,9 @@ LMSquareLossIterations <-
 
 #' Linear model iteration with logistic loss
 #'
+#' Training by using gradient descent on a linear model with logistic loss .
+#' Return a matrix of weight vector for each iteration to the max iteration.
+#'
 #' @param X.mat train feature matrix of size [n x p]
 #' @param y.vec train label vector of size [n x 1]
 #' @param max.iterations integer scalar greater than 1
@@ -99,7 +105,6 @@ LMSquareLossIterations <-
 #'
 #' @return W.mat matrix of weight vectors of size [(p + 1) x max.iterations]
 #'
-
 #' @export
 #'
 #' @examples

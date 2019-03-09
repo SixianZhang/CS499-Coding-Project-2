@@ -1,5 +1,9 @@
 #' Cross validation using linear model with L2 regularization and square loss
 #'
+#' Training by using cross validation on a linear model with square loss and L2 regularization.
+#' Return a list which contains the best penalty, mean loss of training and validation data,
+#' and a predict function which gives a prediction based on the selected penalty.
+#'
 #' @param X.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric vector of length nrow(X.mat)
 #' @param fold.vec a numeric vector of length nrow(X.mat)
@@ -104,6 +108,10 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
 
 
 #' Cross validation using linear model with L2 regularization and logistic loss
+#'
+#' Training by using cross validation on a linear model with logistic loss and L2 regularization.
+#' Return a list which contains the best penalty, mean loss of training and validation data,
+#' and a predict function which gives a prediction based on the selected penalty.
 #'
 #' @param X.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric vector of length nrow(X.mat)

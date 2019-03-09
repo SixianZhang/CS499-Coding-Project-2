@@ -1,8 +1,12 @@
 #' Cross validation algorithm using linear model with square loss
 #'
+#' Training by using cross validation on a linear model with square loss and early stopping method.
+#' Return a list which contains the best iteration step, mean loss of training and validation data,
+#' and a predict function which gives a prediction based on the selected step.
+#'
 #' @param X.mat train feature matrix of size [n x p]
 #' @param y.vec train label vector of size [n x 1]
-#' @param fold.vec
+#' @param fold.vec numeric vector of length n, if it is not given, a fold vector of 5 folds will be used
 #' @param max.iteration integer scalar greater than 1
 #'
 #' @return result.list a list with mean.validation.loss.vec,
@@ -103,6 +107,10 @@ LMSquareLossEarlyStoppingCV <-
 
 
 #' Cross validation algorithm using linear model with logistic loss
+#'
+#' Training by using cross validation on a linear model with logistic loss and early stopping method.
+#' Return a list which contains the best iteration step, mean loss of training and validation data,
+#' and a predict function which gives a prediction based on the selected step.
 #'
 #' @param X.mat train feature matrix of size [n x p]
 #' @param y.vec train label vector of size [n x 1]

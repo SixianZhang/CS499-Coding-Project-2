@@ -22,5 +22,6 @@ LMSquareLossL2(X.scaled.mat, y.vec, penalty, opt.thresh = 0.5,
 opt.weight the optimal weight vector of length ncol(X.scaled)
 }
 \description{
-Linear model L2 regularization with square loss
+Training by using L2 regularization on a linear model with square loss .
+Return the optimal weight vector for the given threshold and penalty.
 }
