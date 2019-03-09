@@ -47,7 +47,7 @@ for (data.name in names(data.list)) {
   
   #Check data type here:
   
-  set.seed(250)
+  set.seed(1)
   
   fold.vec <- sample(rep(1:n.folds, l = length(data.set$labels)))
   
@@ -64,6 +64,7 @@ for (data.name in names(data.list)) {
     
     if (data.set$is.01) {
       # binary data
+      earlystopping.list <- 
         LMLogisticLossEarlyStoppingCV(x.train, y.train, NULL, 100L, 0.5)
       L2.list <-
         LMLogisticLossL2CV(x.train, y.train, NULL, penalty.vec)
@@ -144,12 +145,12 @@ for (data.name in names(data.list)) {
             col = 2,
             pch = 19)
   legend(
-    x = length(penalty.vec),
-    0,
+    x = 0,
+    y = max(cbind(model.list$mean.validation.loss.vec, model.list$mean.train.loss.vec)),
     c("Validation loss", "Train loss"),
     lty = 1:2,
-    xjust = 1,
-    yjust = 0
+    xjust = 0,
+    yjust = 1
   )
 }
 

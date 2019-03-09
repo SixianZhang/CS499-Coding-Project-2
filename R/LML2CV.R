@@ -19,7 +19,7 @@
 #' X.mat <- as.matrix(ozone[,-1])
 #' result.list <- LMSquareLossL2CV(X.mat, y.vec, NULL, penalty.vec = seq(5, 0.1, by = -0.1))
 #' result.list$predict(X.mat[c(3,4,11),])
-LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
+LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec=NULL, penalty.vec) {
   if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
     stop("X.mat must be a numeric matrix.")
   }
@@ -136,7 +136,7 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
 #' L2.list <- LMLogisticLossL2CV(X.mat, y.vec, NULL, penalty.vec)
 #' (L2.list$predict(as.matrix(X.mat[c(2,3),])))
 
-LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
+LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec=NULL, penalty.vec) {
   # Check type and dimension
   if (!all(is.numeric(X.mat), is.matrix(X.mat))) {
     stop("X.mat must be a numeric matrix")

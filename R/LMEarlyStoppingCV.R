@@ -21,7 +21,7 @@
 #' result.list <- LMSquareLossEarlyStoppingCV(X.mat, y.vec, NULL, max.iteration = 5L)
 #' result.list$predict(X.mat[c(3,19,20),])
 LMSquareLossEarlyStoppingCV <-
-  function(X.mat, y.vec, fold.vec, max.iteration) {
+  function(X.mat, y.vec, fold.vec=NULL, max.iteration) {
     if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
       stop("X.mat must be a numeric matrix.")
     }
