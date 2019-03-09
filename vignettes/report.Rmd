@@ -152,6 +152,7 @@ barplot(
 ```
 
 Comment on difference in accuracy:
+In this data set, both Early Stopping and L2 gain a good accuracy
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -192,9 +193,8 @@ legend(
 )
 ```
 
-The optimal number of neighbors is:
-
-Compare against NNLearnCV, and comment on whether or not linear models or nearest neighbors is more accurate:
+What are the optimal regularization parameters?
+Answer: `r model.list$selected.penalty`
 
 
 
@@ -272,6 +272,7 @@ barplot(
 ```
 
 Comment on difference in accuracy:
+In this data set, the accuracy of Early Stopping and L2 is not clear
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -312,10 +313,8 @@ legend(
 )
 ```
 
-The optimal number of neighbors is:
-
-Compare against NNLearnCV, and comment on whether or not linear models or nearest neighbors is more accurate:
-
+What are the optimal regularization parameters?
+Answer: `r model.list$selected.penalty`
 
 
 
@@ -393,6 +392,7 @@ barplot(
 ```
 
 Comment on difference in accuracy:
+In this data set, both Early Stopping and L2 are extremely accurate due to the large number of datas
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -433,10 +433,8 @@ legend(
 )
 ```
 
-The optimal number of neighbors is:
-
-Compare against NNLearnCV, and comment on whether or not linear models or nearest neighbors is more accurate:
-
+What are the optimal regularization parameters?
+Answer: `r model.list$selected.penalty`
 
 
 
@@ -480,7 +478,7 @@ for (i.fold in (1:n.folds)) {
   } else{
     # regression data
     earlystopping.list <-
-      LMSquareLossEarlyStoppingCV(x.train, y.train, NULL, 50L)
+      LMSquareLossEarlyStoppingCV(x.train, y.train, NULL, 500L)
     L2.list <- LMSquareLossL2CV(x.train, y.train, NULL, penalty.vec)
 
     earlystopping.predict <- earlystopping.list$predict(x.test)
@@ -515,6 +513,7 @@ barplot(
 ```
 
 Comment on difference in accuracy:
+In this data set, Early Stopping and L2 are both accurate
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -555,10 +554,8 @@ legend(
 )
 ```
 
-The optimal number of neighbors is:
-
-Compare against NNLearnCV, and comment on whether or not linear models or nearest neighbors is more accurate:
-
+What are the optimal regularization parameters?
+Answer: `r model.list$selected.penalty`
 
 
 
@@ -637,6 +634,7 @@ barplot(
 ```
 
 Comment on difference in accuracy:
+In this data set, Early Stopping and L2 are both accurate
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -677,9 +675,8 @@ legend(
 )
 ```
 
-The optimal number of neighbors is:
-
-Compare against NNLearnCV, and comment on whether or not linear models or nearest neighbors is more accurate:
+What are the optimal regularization parameters?
+Answer: `r model.list$selected.penalty`
 
 
 ## End of the report
