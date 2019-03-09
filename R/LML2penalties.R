@@ -8,6 +8,11 @@
 #' @export
 #'
 #' @examples
+#' data(prostate, package = "ElemStatLearn")
+#' y.vec <- ozone[, 1]
+#' X.mat <- as.matrix(ozone[,-1])
+#' W.mat <- LMSquareLossL2penalties(X.mat, y,vec, seq(5, 0.1, by = -0.1))
+#' 
 LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
   if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
     stop("X.mat must be a numeric matrix.")

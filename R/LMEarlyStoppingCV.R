@@ -2,7 +2,7 @@
 #'
 #' @param X.mat train feature matrix of size [n x p]
 #' @param y.vec train label vector of size [n x 1]
-#' @param fold.vec
+#' @param fold.vec the fold vector information of size [n x 1], which is assigned in the general test
 #' @param max.iteration integer scalar greater than 1
 #'
 #' @return result.list a list with mean.validation.loss.vec,
@@ -10,7 +10,11 @@
 #'
 #' @export
 #'
-#' @examples
+#' @examples 
+#' data(prostate, package = "ElemStatLearn")
+#' y.vec <- ozone[, 1]
+#' X.mat <- as.matrix(ozone[,-1])
+#' result.list <- LMSquareLossEarlyStoppingCV(X.mat, y.vec, max.iteration = 5L)
 LMSquareLossEarlyStoppingCV <-
   function(X.mat, y.vec, fold.vec, max.iteration) {
     if (!all(is.matrix(X.mat), is.numeric(X.mat))) {

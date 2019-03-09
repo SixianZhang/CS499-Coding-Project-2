@@ -10,6 +10,10 @@
 #' @export
 #'
 #' @examples
+#' data(prostate, package = "ElemStatLearn")
+#' y.vec <- ozone[, 1]
+#' X.mat <- as.matrix(ozone[,-1])
+#' W.mat <- LMSquareLossIterations(X.mat, y.vec, max.iterations = 5L)
 LMSquareLossIterations <-
   function(X.mat, y.vec, max.iterations, step.size = 0.5) {
     if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
