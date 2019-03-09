@@ -1,10 +1,10 @@
 library(testthat)
 library(LinearModel)
-data(prostate, package = "ElemStatLearn")
-X.mat <- data.matrix(subset(prostate, select = -c(train, lpsa)))
-y.vec <- as.vector(data.matrix(subset(prostate, select = lpsa)))
-fold.vec <- as.vector(data.matrix(subset(prostate, select =  lpsa)))
-penalty.vec <- as.vector(data.matrix(subset(prostate, select =  lpsa)))
+data(spam, package = "ElemStatLearn")
+X.mat <- data.matrix(spam[,-ncol(spam)])
+y.vec <- as.vector(ifelse(spam$spam == 'spam',1,0))
+fold.vec <- sample(rep(1:4, l = length(y.vec)))
+penalty.vec <- seq(5, 0.1, by = -0.1)
 # LMSquareLossL2CV X.mat, y.vec, fold.vec, penalty.vec
 
 test_that(
@@ -34,12 +34,12 @@ test_that(
     expect_error(
       result.list <-
         LMSquareLossL2CV(X.mat, y.vec, fold.vec[-1], penalty.vec),
-      "fold.vec must be assigned before input and it must be a integer vector",
+      "fold.vec must be a numeric vector of length nrow(X.mat)",
       fixed = TRUE
     )
     expect_error(
       result.list <-
-        LMSquareLossL2CV(X.mat, y.vec, fold.vec, penalty.vec[-1]),
+        LMSquareLossL2CV(X.mat, y.vec, fold.vec, seq(0.1, 5, by = 0.1)),
       "penalty.vec must be a non-negative decreasing numeric vector",
       fixed = TRUE
     )

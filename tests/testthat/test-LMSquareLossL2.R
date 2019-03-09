@@ -30,32 +30,32 @@ test_that(
   {
     expect_error(
       optimal.weight <- 
-        LMSquareLossL2(as.data.frame(X.scaled.mat), y.vec, penalty, opt.thresh, initial.weight.vec),
+        LMSquareLossL2(as.data.frame(X.scaled.mat), y.vec, penalty, opt.thresh, initial.weight.vec, 0.01),
       "X.mat must be a numeric matrix.",
       fixed = TRUE
     )
     expect_error(
       optimal.weight <-
-        LMSquareLossL2(X.scaled.mat, y.vec[-1], penalty, opt.thresh, initial.weight.vec),
+        LMSquareLossL2(X.scaled.mat, y.vec[-1], penalty, opt.thresh, initial.weight.vec, 0.01),
       "y.vec must be a numeric vector of the same number of rows as X.mat.",
       fixed = TRUE
     )
     expect_error(
       optimal.weight <-
-        LMSquareLossL2(X.scaled.mat, y.vec, as.double(penalty), opt.thresh, initial.weight.vec),
+        LMSquareLossL2(X.scaled.mat, y.vec, c(rep(penalty,2)), opt.thresh, initial.weight.vec, 0.01),
       "penalty must be a non-negative numeric scalar.",
       fixed = TRUE
-    )    
+    )
     expect_error(
       optimal.weight <-
-        LMSquareLossL2(X.scaled.mat, y.vec, penalty, as.double(opt.thresh), initial.weight.vec),
+        LMSquareLossL2(X.scaled.mat, y.vec, penalty, c(rep(opt.thresh,2)), initial.weight.vec, 0.01),
       "opt.thresh must be a positive numeric scalar.",
       fixed = TRUE
     )    
     expect_error(
       optimal.weight <-
-        LMSquareLossL2(X.scaled.mat, y.vec, penalty, opt.thresh, initial.weight.vec[-1]),
-      "initial.weight.vec must be a numeric vector.",
+        LMSquareLossL2(X.scaled.mat, y.vec, penalty, opt.thresh, initial.weight.vec[-1], 0.01),
+      "initial.weight.vec must be a numeric vector of length ncol(X.scaled.mat) + 1",
       fixed = TRUE
     )
   }

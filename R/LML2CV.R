@@ -136,11 +136,13 @@ LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
              length(fold.vec) == nrow(X.mat))) {
       stop("fold.vec must be a numeric vector of length nrow(X.mat)")
     }
-  
-  if (!all(is.numeric(penalty.vec),
-           is.vector(penalty.vec),
-           penalty.vec >= 0)) {
-    stop("penallty.vec must be a non-negative numeric vector")
+  if (!all(
+    is.vector(penalty.vec),
+    is.numeric(penalty.vec),
+    penalty.vec >= 0,
+    diff(penalty.vec) < 0
+  )) {
+    stop("penalty.vec must be a non-negative decreasing numeric vector")
   }
   
   # If y contains 0 and 1 then match to -1, 1

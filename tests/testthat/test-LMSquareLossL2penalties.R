@@ -1,9 +1,9 @@
 library(testthat)
 library(LinearModel)
-data(prostate, package = "ElemStatLearn")
-X.mat <- data.matrix(subset(prostate, select = -c(train, lpsa)))
-y.vec <- as.vector(data.matrix(subset(prostate, select = lpsa)))
-penalty.vec <- as.vector(data.matrix(subset(prostate, select =  lpsa)))
+data(spam, package = "ElemStatLearn")
+X.mat <- data.matrix(spam[,-ncol(spam)])
+y.vec <- as.vector(ifelse(spam$spam == 'spam',1,0))
+penalty.vec <- seq(5, 0.1, by = -0.1)
 # X.mat, y.vec, penalty.vec
 
 test_that(
@@ -13,8 +13,7 @@ test_that(
       LMSquareLossL2penalties(X.mat, y.vec, penalty.vec)
     expect_true(is.numeric(W.mat))
     expect_true(is.matrix(W.mat))
-    expect_equal(nrow(W.mat), ncol(X.mat))
-    expect_equal(ncol(W.mat), len(penalty.vec))
+    expect_equal(nrow(W.mat), ncol(cbind(1, X.mat)))
   }
 )
 
@@ -35,7 +34,7 @@ test_that(
     )
     expect_error(
       W.mat <-
-        LMSquareLossL2penalties(X.mat, y.vec, penalty.vec[-1]),
+        LMSquareLossL2penalties(X.mat, y.vec, seq(0.1, 5, by = 0.1)),
       "penalty.vec must be a non-negative decreasing numeric vector",
       fixed = TRUE
     )

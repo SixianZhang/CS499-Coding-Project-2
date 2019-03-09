@@ -91,10 +91,18 @@ LMLogisticLossL2penalties <-
       stop("y.vec must be a numeric vector of length nrow(X.mat)")
     }
     
-    if (!all(is.numeric(penalty.vec),
-             is.vector(penalty.vec),
-             penalty.vec >= 0)) {
-      stop("penallty.vec must be a non-negative numeric vector")
+    is.decending <- function(vec) {
+      result <- all(diff(vec) < 0)
+      return(result)
+    }
+    
+    if (!all(
+      is.vector(penalty.vec),
+      is.numeric(penalty.vec),
+      penalty.vec >= 0,
+      is.decending(penalty.vec)
+    )) {
+      stop("penalty.vec must be a non-negative decreasing numeric vector")
     }
      
     if (!all(is.numeric(opt.thresh),

@@ -38,8 +38,9 @@ LMSquareLossL2 <-
     }
       
     if (!all(is.vector(initial.weight.vec),
-             is.numeric(initial.weight.vec))) {
-      stop("initial.weight.vec must be a numeric vector.")
+             is.numeric(initial.weight.vec),
+             length(initial.weight.vec) == ncol(X.scaled.mat) + 1)) {
+      stop("initial.weight.vec must be a numeric vector of length ncol(X.scaled.mat) + 1")
     }
     
     weight.vec <- initial.weight.vec[-1]
