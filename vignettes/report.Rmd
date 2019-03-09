@@ -23,9 +23,9 @@ Here are some significant formulas that have been used in this function:
 
 **Loss Function: **
 
-**1.Square Loss (Regression): **$L(w) = ||Xw-y||^2_2$
+**1.Square Loss (Regression): **$L(w) = ||Xw + {\beta}_n-y||^2_2$
 
-**2.Logistic Loss (Binary classification): **$L(w) = \sum^{n}_{i=1}log[1+exp(-\hat{y_i}w^tx)]$
+**2.Logistic Loss (Binary classification): **$L(w) = \sum^{n}_{i=1}log[1+exp(-\hat{y_i}(w^tx + {\beta}_n)]$
 
 
 **Cost Function: ** $C_\lambda(w) = L(w)+\lambda||w||^2_2$
@@ -152,7 +152,7 @@ barplot(
 ```
 
 Comment on difference in accuracy:
-In this data set, both Early Stopping and L2 gain a good accuracy
+In this data set, both Early Stopping and L2 gain a good accuracy better than the baseline predictor.
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -184,12 +184,12 @@ matpoints(x = dot.x,
           col = 2,
           pch = 19)
 legend(
-  x = length(penalty.vec),
-  0,
-  c("Validation loss", "Train loss"),
-  lty = 1:2,
-  xjust = 1,
-  yjust = 0
+    x = 0,
+    y = max(cbind(model.list$mean.validation.loss.vec, model.list$mean.train.loss.vec)),
+    c("Validation loss", "Train loss"),
+    lty = 1:2,
+    xjust = 0,
+    yjust = 1
 )
 ```
 
@@ -272,7 +272,7 @@ barplot(
 ```
 
 Comment on difference in accuracy:
-In this data set, the accuracy of Early Stopping and L2 is not clear
+In this data set, the accuracy of Early Stopping and L2 is only a little bit better than the baseline predictor, which may due to the limited training data.
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -304,12 +304,12 @@ matpoints(x = dot.x,
           col = 2,
           pch = 19)
 legend(
-  x = length(penalty.vec),
-  0,
-  c("Validation loss", "Train loss"),
-  lty = 1:2,
-  xjust = 1,
-  yjust = 0
+    x = 0,
+    y = max(cbind(model.list$mean.validation.loss.vec, model.list$mean.train.loss.vec)),
+    c("Validation loss", "Train loss"),
+    lty = 1:2,
+    xjust = 0,
+    yjust = 1
 )
 ```
 
@@ -392,7 +392,7 @@ barplot(
 ```
 
 Comment on difference in accuracy:
-In this data set, both Early Stopping and L2 are extremely accurate due to the large number of datas
+In this data set, both Early Stopping and L2 are extremely accurate due to the large number of the data points.
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -424,12 +424,12 @@ matpoints(x = dot.x,
           col = 2,
           pch = 19)
 legend(
-  x = length(penalty.vec),
-  0,
-  c("Validation loss", "Train loss"),
-  lty = 1:2,
-  xjust = 1,
-  yjust = 0
+    x = 0,
+    y = max(cbind(model.list$mean.validation.loss.vec, model.list$mean.train.loss.vec)),
+    c("Validation loss", "Train loss"),
+    lty = 1:2,
+    xjust = 0,
+    yjust = 1
 )
 ```
 
@@ -513,7 +513,7 @@ barplot(
 ```
 
 Comment on difference in accuracy:
-In this data set, Early Stopping and L2 are both accurate
+In this data set, Early Stopping and L2 are both accurate enough to predict the label comparing with the baseline predictor.
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -545,12 +545,12 @@ matpoints(x = dot.x,
           col = 2,
           pch = 19)
 legend(
-  x = length(penalty.vec),
-  0,
-  c("Validation loss", "Train loss"),
-  lty = 1:2,
-  xjust = 1,
-  yjust = 0
+    x = 0,
+    y = max(cbind(model.list$mean.validation.loss.vec, model.list$mean.train.loss.vec)),
+    c("Validation loss", "Train loss"),
+    lty = 1:2,
+    xjust = 0,
+    yjust = 1
 )
 ```
 
@@ -634,7 +634,7 @@ barplot(
 ```
 
 Comment on difference in accuracy:
-In this data set, Early Stopping and L2 are both accurate
+In this data set, Early Stopping and L2 are both accurate enough to predict the label comparing with the baseline predictor.
 
 ### Train/validation loss plot
 ```{r, fig.show='hold', fig.width= 6, fig.height= 6}
@@ -666,12 +666,12 @@ matpoints(x = dot.x,
           col = 2,
           pch = 19)
 legend(
-  x = length(penalty.vec),
-  0,
-  c("Validation loss", "Train loss"),
-  lty = 1:2,
-  xjust = 1,
-  yjust = 0
+    x = 0,
+    y = max(cbind(model.list$mean.validation.loss.vec, model.list$mean.train.loss.vec)),
+    c("Validation loss", "Train loss"),
+    lty = 1:2,
+    xjust = 0,
+    yjust = 1
 )
 ```
 
