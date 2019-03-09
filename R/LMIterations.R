@@ -18,7 +18,7 @@
 #' X.mat <- as.matrix(ozone[,-1])
 #' W.mat <- LMSquareLossIterations(X.mat, y.vec, max.iterations = 5L)
 LMSquareLossIterations <-
-  function(X.mat, y.vec, max.iterations, step.size = 0.5) {
+  function(X.mat, y.vec, max.iterations, step.size = 0.01) {
     if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
       stop("X.mat must be a numeric matrix.")
     }
@@ -62,32 +62,27 @@ LMSquareLossIterations <-
     # for-loop to get the slope.mat matrix
     for (iter.index in (1:max.iterations)) {
       if (iter.index == 1) {
-        mean.loss.slope.vec <- (2 * t(X.scaled.mat) %*%
-                                 (X.scaled.mat %*% slope.mat[, 1] +
-                                    c(rep(1, num.train)) * intercept.vec[1] - y.vec)) / num.train
+        mean.loss.slope.vec <- 2 * t(X.scaled.mat) %*% 
+          (X.scaled.mat %*% slope.mat[,1]  + rep(intercept.vec[1], num.train) - y.vec)/num.train
         
-        mean.loss.intercept <- 2 * t(c(rep(1, num.train))) %*% (X.scaled.mat %*% slope.mat[, 1]
-                                        + c(rep(1, num.train)) * intercept.vec[1] - y.vec) / num.train
+        mean.loss.intercept <- 2 * colSums(X.scaled.mat %*% slope.mat[,1] + rep(intercept.vec[1], num.train) - y.vec)/num.train
         slope.vec.temp <- 
           slope.mat[, 1] - step.size * mean.loss.slope.vec
-        
         intercept.vec.temp <- intercept.vec[1] - step.size * mean.loss.intercept
         
       } else{
-        mean.loss.slope.vec <- (2 * t(X.scaled.mat) %*%
-                                 (X.scaled.mat %*% slope.mat[, iter.index - 1] +
-                                    c(rep(1, num.train)) * intercept.vec[iter.index - 1] - y.vec)) / num.train
+        mean.loss.slope.vec <- 2 * t(X.scaled.mat) %*% 
+          (X.scaled.mat %*% slope.mat[,iter.index - 1]  + rep(intercept.vec[iter.index - 1], num.train) - y.vec)/num.train
         
-        mean.loss.intercept <- 2 * t(c(rep(1, num.train))) %*% (X.scaled.mat %*% slope.mat[, iter.index - 1]
-                                                                      + c(rep(1, num.train)) * intercept.vec[iter.index -1] - y.vec) / num.train
+        mean.loss.intercept <- 2 * colSums(X.scaled.mat %*% slope.mat[,iter.index - 1] + rep(intercept.vec[iter.index - 1], num.train) - y.vec)/num.train
         
         slope.vec.temp <-
           slope.mat[, iter.index - 1] - step.size * mean.loss.slope.vec
         
         intercept.vec.temp <- intercept.vec[iter.index - 1] - step.size * mean.loss.intercept
       }
-      slope.mat[, iter.index] = slope.vec.temp
-      intercept.vec[iter.index] = intercept.vec.temp
+      slope.mat[, iter.index] <- slope.vec.temp
+      intercept.vec[iter.index] <- intercept.vec.temp
       
     }
     intercept.part1 <- -X.mean.vec %*% X.std.mat %*% slope.mat  #1 x m

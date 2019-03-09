@@ -11,32 +11,32 @@ data(prostate, package = "ElemStatLearn")
 data(ozone, package = "ElemStatLearn")
 
 data.list <- list(
-  spam = list(
-    features = as.matrix(spam[, 1:57]),
-    labels = ifelse(spam$spam == "spam", 1, 0),
-    is.01 = TRUE
-  ),
-
-  SAheart = list(
-    features = as.matrix(SAheart[, c(1:4,6:9)]),
-    labels = SAheart$chd,
-    is.01 = TRUE
-  ),
-
-  zip.train = list(
-    features = as.matrix(zip.train[, -1]),
-    labels = zip.train[, 1],
-    is.01 = TRUE
-  ),
+  # spam = list(
+  #   features = as.matrix(spam[, 1:57]),
+  #   labels = ifelse(spam$spam == "spam", 1, 0),
+  #   is.01 = TRUE
+  # ),
+  # 
+  # SAheart = list(
+  #   features = as.matrix(SAheart[, c(1:4,6:9)]),
+  #   labels = SAheart$chd,
+  #   is.01 = TRUE
+  # ),
+  # 
+  # zip.train = list(
+  #   features = as.matrix(zip.train[, -1]),
+  #   labels = zip.train[, 1],
+  #   is.01 = TRUE
+  # ),
 
 
   prostate = list(features = as.matrix(prostate[, 1:8]),
                   labels = prostate$lpsa,
-                  is.01 = FALSE),
+                  is.01 = FALSE)
 
-  ozone = list(features = as.matrix(ozone[,-1]),
-               labels = ozone[, 1],
-               is.01 = FALSE)
+  # ozone = list(features = as.matrix(ozone[,-1]),
+  #              labels = ozone[, 1],
+  #              is.01 = FALSE)
 )
 
 n.folds <- 4L
@@ -47,7 +47,7 @@ for (data.name in names(data.list)) {
   
   #Check data type here:
   
-  set.seed(2)
+  set.seed(250)
   
   fold.vec <- sample(rep(1:n.folds, l = length(data.set$labels)))
   
@@ -64,7 +64,6 @@ for (data.name in names(data.list)) {
     
     if (data.set$is.01) {
       # binary data
-      earlystopping.list <-
         LMLogisticLossEarlyStoppingCV(x.train, y.train, NULL, 100L, 0.5)
       L2.list <-
         LMLogisticLossL2CV(x.train, y.train, NULL, penalty.vec)
@@ -78,7 +77,7 @@ for (data.name in names(data.list)) {
     } else{
       # regression data
       earlystopping.list <-
-        LMSquareLossEarlyStoppingCV(x.train, y.train, NULL, 50L)
+        LMSquareLossEarlyStoppingCV(x.train, y.train, NULL, 500L)
       L2.list <- LMSquareLossL2CV(x.train, y.train, NULL, penalty.vec)
       
       earlystopping.predict <- earlystopping.list$predict(x.test)
