@@ -28,6 +28,6 @@ and a predict function which gives a prediction based on the selected penalty.
 data(ozone, package = "ElemStatLearn")
 y.vec <- ozone[, 1]
 X.mat <- as.matrix(ozone[,-1])
-result.list <- LMSquareLossL2CV(X.mat, y.vec, penalty.vec = seq(5, 0.1, by = -0.1))
+result.list <- LMSquareLossL2CV(X.mat, y.vec, NULL, penalty.vec = seq(5, 0.1, by = -0.1))
 result.list$predict(X.mat[c(3,4,11),])
 }

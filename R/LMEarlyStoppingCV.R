@@ -18,8 +18,8 @@
 #' data(ozone, package = "ElemStatLearn")
 #' y.vec <- ozone[, 1]
 #' X.mat <- as.matrix(ozone[,-1])
-#' result.list <- LMSquareLossEarlyStoppingCV(X.mat, y.vec, max.iteration = 5L)
-#' result.lsit$predict(X.mat[c(3,19,20),])
+#' result.list <- LMSquareLossEarlyStoppingCV(X.mat, y.vec, NULL, max.iteration = 5L)
+#' result.list$predict(X.mat[c(3,19,20),])
 LMSquareLossEarlyStoppingCV <-
   function(X.mat, y.vec, fold.vec, max.iteration) {
     if (!all(is.matrix(X.mat), is.numeric(X.mat))) {

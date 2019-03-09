@@ -17,7 +17,7 @@
 #' data(ozone, package = "ElemStatLearn")
 #' y.vec <- ozone[, 1]
 #' X.mat <- as.matrix(ozone[,-1])
-#' result.list <- LMSquareLossL2CV(X.mat, y.vec, penalty.vec = seq(5, 0.1, by = -0.1))
+#' result.list <- LMSquareLossL2CV(X.mat, y.vec, NULL, penalty.vec = seq(5, 0.1, by = -0.1))
 #' result.list$predict(X.mat[c(3,4,11),])
 LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
   if (!all(is.matrix(X.mat), is.numeric(X.mat))) {

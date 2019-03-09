@@ -26,6 +26,6 @@ Return a matrix of weight vector for the given penalty vector.
 data(ozone, package = "ElemStatLearn")
 y.vec <- ozone[, 1]
 X.mat <- as.matrix(ozone[,-1])
-W.mat <- LMSquareLossL2penalties(X.mat, y,vec, seq(5, 0.1, by = -0.1))
+W.mat <- LMSquareLossL2penalties(X.mat, y.vec,seq(5, 0.1, by = -0.1))
 
 }
