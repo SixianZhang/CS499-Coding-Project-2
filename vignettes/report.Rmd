@@ -144,7 +144,7 @@ test.loss.mat
 # plot result
 barplot(
   test.loss.mat,
-  main = c("Binary Classification: ", data.name),
+  main = c("Binary Classification: ", "spam"),
   xlab = "mean loss value",
   legend = (rownames(test.loss.mat)),
   beside = TRUE
@@ -264,7 +264,7 @@ test.loss.mat
 # plot result
 barplot(
   test.loss.mat,
-  main = c("Binary Classification: ", data.name),
+  main = c("Binary Classification: ", "SAheart"),
   xlab = "mean loss value",
   legend = (rownames(test.loss.mat)),
   beside = TRUE
@@ -385,7 +385,7 @@ test.loss.mat
 # plot result
 barplot(
   test.loss.mat,
-  main = c("Binary Classification: ", data.name),
+  main = c("Binary Classification: ", "zip.train"),
   xlab = "mean loss value",
   legend = (rownames(test.loss.mat)),
   beside = TRUE
@@ -507,7 +507,7 @@ test.loss.mat
 # plot result
 barplot(
   test.loss.mat,
-  main = c("Binary Classification: ", data.name),
+  main = c("Binary Classification: ", "prostate"),
   xlab = "mean loss value",
   legend = (rownames(test.loss.mat)),
   beside = TRUE
@@ -629,7 +629,7 @@ test.loss.mat
 # plot result
 barplot(
   test.loss.mat,
-  main = c("Binary Classification: ", data.name),
+  main = c("Binary Classification: ", "ozone"),
   xlab = "mean loss value",
   legend = (rownames(test.loss.mat)),
   beside = TRUE
