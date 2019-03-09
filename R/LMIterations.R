@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @examples
-#' data(prostate, package = "ElemStatLearn")
+#' data(ozone, package = "ElemStatLearn")
 #' y.vec <- ozone[, 1]
 #' X.mat <- as.matrix(ozone[,-1])
 #' W.mat <- LMSquareLossIterations(X.mat, y.vec, max.iterations = 5L)

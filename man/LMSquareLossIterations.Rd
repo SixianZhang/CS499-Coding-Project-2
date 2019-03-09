@@ -23,3 +23,9 @@ A prediction can be obtained by cbind(1,X.mat) %*% W.mat.
 Training by using gradient descent on a linear model with square loss .
 Return a matrix of weight vector for each iteration to the max iteration.
 }
+\examples{
+data(ozone, package = "ElemStatLearn")
+y.vec <- ozone[, 1]
+X.mat <- as.matrix(ozone[,-1])
+W.mat <- LMSquareLossIterations(X.mat, y.vec, max.iterations = 5L)
+}

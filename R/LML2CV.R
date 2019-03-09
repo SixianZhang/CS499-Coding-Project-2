@@ -14,6 +14,11 @@
 #' @export
 #'
 #' @examples
+#' data(ozone, package = "ElemStatLearn")
+#' y.vec <- ozone[, 1]
+#' X.mat <- as.matrix(ozone[,-1])
+#' result.list <- LMSquareLossL2CV(X.mat, y.vec, penalty.vec = seq(5, 0.1, by = -0.1))
+#' result.list$predict(X.mat[c(3,4,11),])
 LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
   if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
     stop("X.mat must be a numeric matrix.")
@@ -127,9 +132,9 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
 #' data(spam, package = "ElemStatLearn")
 #' X.mat <- as.matrix(spam[, 1:57])
 #' y.vec <- ifelse(spam$spam == "spam", 1, 0)
-#' penalty.vec <- seq(5:0.1, by = -0.1)
-#' L2.list <- LMlogistLossL2CV(X.mat, y.vec, NULL, penalty.vec)
-#' (L2.list$predict(X.mat[1,]))
+#' penalty.vec <- seq(5,0.1, by = -0.1)
+#' L2.list <- LMLogisticLossL2CV(X.mat, y.vec, NULL, penalty.vec)
+#' (L2.list$predict(as.matrix(X.mat[c(2,3),])))
 
 LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
   # Check type and dimension

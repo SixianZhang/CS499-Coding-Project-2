@@ -35,6 +35,6 @@ data(spam, package = "ElemStatLearn")
 X.mat <- as.matrix(spam[, 1:57])
 X.scaled.mat <- scale(X.mat)
 y.vec <- ifelse(spam$spam == "spam", 1, -1)
-opt.weight.vec <- LMLogisticLossL2(X.mat, y.vec, 0.5, 0.5, rep(0,ncol(X.scaled.mat), 0.01, 100L))
-(opt.weigh.vec)
+opt.weight.vec <- LMLogisticLossL2(X.mat, y.vec, 0.5, 0.5, rep(0,ncol(X.scaled.mat) + 1), 0.01, 100L)
+(opt.weight.vec)
 }

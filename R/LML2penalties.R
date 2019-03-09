@@ -6,17 +6,18 @@
 #' @param X.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric vector of length nrow(X.mat)
 #' @param penalty.vec a non-negative numeric vector
+#' @param opt.thresh a non-negative numeric scalar
 #'
 #' @return W.mat a numeric weight matrix of size [ncol(X.mat) x length(penalty.vec)]
 #' @export
 #'
 #' @examples
-#' data(prostate, package = "ElemStatLearn")
+#' data(ozone, package = "ElemStatLearn")
 #' y.vec <- ozone[, 1]
 #' X.mat <- as.matrix(ozone[,-1])
 #' W.mat <- LMSquareLossL2penalties(X.mat, y,vec, seq(5, 0.1, by = -0.1))
 #' 
-LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
+LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec, opt.thresh = 0.5) {
   if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
     stop("X.mat must be a numeric matrix.")
   }
@@ -84,6 +85,7 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
 #' @param X.mat a numeric matrix of size [n x p]
 #' @param y.vec a numeric vector of length nrow(X.mat)
 #' @param penalty.vec a non-negative numeric vector
+#' @param opt.thresh a non-negative numeric scalar 
 #'
 #' @return W.mat a numeric weight matrix of size [ncol(X.mat) x length(penalty.vec)]
 #' @export
@@ -92,7 +94,7 @@ LMSquareLossL2penalties <- function(X.mat, y.vec, penalty.vec) {
 #' data(spam, package = "ElemStatLearn")
 #' X.mat <- as.matrix(spam[, 1:57])
 #' y.vec <- ifelse(spam$spam == "spam", 1, -1)
-#' penalty.vec <- seq(5:0.1, by = -0.1)
+#' penalty.vec <- seq(5,0.1, by = -0.1)
 #' W.mat <- LMLogisticLossL2penalties(X.mat, y.vec, penalty.vec, 0.5)
 #' (W.mat)
 

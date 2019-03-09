@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-#' data(prostate, package = "ElemStatLearn")
+#' data(ozone, package = "ElemStatLearn")
 #' y.vec <- ozone[, 1]
 #' X.mat <- as.matrix(ozone[,-1])
 #' num.train <- dim(X.mat)[1]
@@ -25,7 +25,6 @@
 #' X.std.mat <- diag(num.feature) * (1 / X.std.vec)
 #' X.scaled.mat <- t((t(X.mat) - X.mean.vec) / X.std.vec)
 #' optimal.weight.vec <- LMSquareLossL2(X.scaled.mat, y.vec, penalty = 0.5, initial.weight.vec = c(rep(0, ncol(X.mat) + 1)))
-data(ozone, package = "ElemStatLearn")
 LMSquareLossL2 <-
   function(X.scaled.mat,
            y.vec,
@@ -108,8 +107,8 @@ LMSquareLossL2 <-
 #' X.mat <- as.matrix(spam[, 1:57])
 #' X.scaled.mat <- scale(X.mat)
 #' y.vec <- ifelse(spam$spam == "spam", 1, -1)
-#' opt.weight.vec <- LMLogisticLossL2(X.mat, y.vec, 0.5, 0.5, rep(0,ncol(X.scaled.mat), 0.01, 100L))
-#' (opt.weigh.vec)
+#' opt.weight.vec <- LMLogisticLossL2(X.mat, y.vec, 0.5, 0.5, rep(0,ncol(X.scaled.mat) + 1), 0.01, 100L)
+#' (opt.weight.vec)
 
  
 LMLogisticLossL2 <-

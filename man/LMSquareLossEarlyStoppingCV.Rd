@@ -11,7 +11,7 @@ LMSquareLossEarlyStoppingCV(X.mat, y.vec, fold.vec, max.iteration)
 
 \item{y.vec}{train label vector of size [n x 1]}
 
-\item{fold.vec}{numeric vector of length n, if it is not given, a fold vector of 5 folds will be used}
+\item{fold.vec}{the fold vector information of size [n x 1], which is assigned in the general test}
 
 \item{max.iteration}{integer scalar greater than 1}
 }
@@ -23,4 +23,11 @@ mean.train.loss.vec,selected.steps,weight.vec,and predict function
 Training by using cross validation on a linear model with square loss and early stopping method.
 Return a list which contains the best iteration step, mean loss of training and validation data,
 and a predict function which gives a prediction based on the selected step.
+}
+\examples{
+data(ozone, package = "ElemStatLearn")
+y.vec <- ozone[, 1]
+X.mat <- as.matrix(ozone[,-1])
+result.list <- LMSquareLossEarlyStoppingCV(X.mat, y.vec, max.iteration = 5L)
+result.lsit$predict(X.mat[c(3,19,20),])
 }

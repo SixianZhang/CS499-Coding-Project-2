@@ -1,5 +1,5 @@
 
-#library(LinearModel)
+library(LinearModel)
 # This is a test script for general data
 # library(LinearModel)
 

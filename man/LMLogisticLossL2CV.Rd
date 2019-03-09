@@ -28,7 +28,7 @@ and a predict function which gives a prediction based on the selected penalty.
 data(spam, package = "ElemStatLearn")
 X.mat <- as.matrix(spam[, 1:57])
 y.vec <- ifelse(spam$spam == "spam", 1, 0)
-penalty.vec <- seq(5:0.1, by = -0.1)
-L2.list <- LMlogistLossL2CV(X.mat, y.vec, NULL, penalty.vec)
-(L2.list$predict(X.mat[1,]))
+penalty.vec <- seq(5,0.1, by = -0.1)
+L2.list <- LMLogisticLossL2CV(X.mat, y.vec, NULL, penalty.vec)
+(L2.list$predict(as.matrix(X.mat[c(2,3),])))
 }

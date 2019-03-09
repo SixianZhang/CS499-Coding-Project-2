@@ -15,10 +15,11 @@
 #' @export
 #'
 #' @examples 
-#' data(prostate, package = "ElemStatLearn")
+#' data(ozone, package = "ElemStatLearn")
 #' y.vec <- ozone[, 1]
 #' X.mat <- as.matrix(ozone[,-1])
 #' result.list <- LMSquareLossEarlyStoppingCV(X.mat, y.vec, max.iteration = 5L)
+#' result.lsit$predict(X.mat[c(3,19,20),])
 LMSquareLossEarlyStoppingCV <-
   function(X.mat, y.vec, fold.vec, max.iteration) {
     if (!all(is.matrix(X.mat), is.numeric(X.mat))) {
@@ -133,8 +134,8 @@ LMSquareLossEarlyStoppingCV <-
 #' data(spam, package = "ElemStatLearn")
 #' X.mat <- as.matrix(spam[, 1:57])
 #' y.vec <- ifelse(spam$spam == "spam", 1, 0)
-#' earlystopping.list <- LMLogisticLossEarlyStoppingCV(X.mat, y.vec, NULL, m100L, 0.5)
-#' (earlystopping.list$predict(X.mat[1,]))
+#' earlystopping.list <- LMLogisticLossEarlyStoppingCV(X.mat, y.vec, NULL, 100L, 0.5)
+#' (earlystopping.list$predict(as.matrix(X.mat[c(2,4),])))
 #' 
 
 LMLogisticLossEarlyStoppingCV <-
