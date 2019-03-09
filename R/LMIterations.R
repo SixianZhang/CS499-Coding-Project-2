@@ -103,6 +103,15 @@ LMSquareLossIterations <-
 #' @export
 #'
 #' @examples
+#' 
+#' data(spam, package = "ElemStatLearn")
+#' X.mat <- as.matrix(spam[, 1:57])
+#' y.vec <- ifelse(spam$spam == "spam", 1, -1)
+#' W.mat <- LMLogisticLossIterations(X.mat, y.vec, max.iterations = 100L, step.size = 0.5)
+#' (W.mat)
+
+ 
+
 LMLogisticLossIterations <-
   function(X.mat, y.vec, max.iterations, step.size) {
     # Check type and dimension

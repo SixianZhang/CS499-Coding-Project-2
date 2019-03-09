@@ -21,3 +21,11 @@ W.mat matrix of weight vectors of size [(p + 1) x max.iterations]
 \description{
 Linear model iteration with logistic loss
 }
+\examples{
+
+data(spam, package = "ElemStatLearn")
+X.mat <- as.matrix(spam[, 1:57])
+y.vec <- ifelse(spam$spam == "spam", 1, -1)
+W.mat <- LMLogisticLossIterations(X.mat, y.vec, max.iterations = 100L, step.size = 0.5)
+(W.mat)
+}

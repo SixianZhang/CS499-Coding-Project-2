@@ -116,6 +116,13 @@ LMSquareLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
 #' @export
 #'
 #' @examples
+#' data(spam, package = "ElemStatLearn")
+#' X.mat <- as.matrix(spam[, 1:57])
+#' y.vec <- ifelse(spam$spam == "spam", 1, 0)
+#' penalty.vec <- seq(5:0.1, by = -0.1)
+#' L2.list <- LMlogistLossL2CV(X.mat, y.vec, NULL, penalty.vec)
+#' (L2.list$predict(X.mat[1,]))
+
 LMLogisticLossL2CV <- function(X.mat, y.vec, fold.vec, penalty.vec) {
   # Check type and dimension
   if (!all(is.numeric(X.mat), is.matrix(X.mat))) {

@@ -117,6 +117,14 @@ LMSquareLossEarlyStoppingCV <-
 #' @export
 #'
 #' @examples
+#' 
+#' data(spam, package = "ElemStatLearn")
+#' X.mat <- as.matrix(spam[, 1:57])
+#' y.vec <- ifelse(spam$spam == "spam", 1, 0)
+#' earlystopping.list <- LMLogisticLossEarlyStoppingCV(X.mat, y.vec, NULL, m100L, 0.5)
+#' (earlystopping.list$predict(X.mat[1,]))
+#' 
+
 LMLogisticLossEarlyStoppingCV <-
   function(X.mat,
            y.vec,
